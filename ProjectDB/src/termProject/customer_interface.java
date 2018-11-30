@@ -7,13 +7,38 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.sql.*;
 import javax.swing.*;
+import java.util.Calendar;
 
 public class customer_interface extends JFrame implements ActionListener{
+	
+	private Calendar today = Calendar.getInstance();
 
 	public customer_interface() {
 		
 		setSize(1000, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		setLayout(new BorderLayout());	//전체 레이아웃 설정
+		
+		//상단에 위치할 기본정보 패널
+		JPanel normal_info = new JPanel();
+		add(normal_info, BorderLayout.NORTH);
+		
+		normal_info.setLayout(new GridLayout(0, 3));	//왼쪽 => 오늘날짜, 오른쪽 => 사용자 ID
+		
+		JLabel date_info = new JLabel();	//날짜정보
+		normal_info.add(date_info);
+		date_info.setText(today.get(Calendar.YEAR) + "/" + today.get(Calendar.MONTH) + "/" + today.get(Calendar.DATE));
+		date_info.setFont(new Font("Serif", Font.BOLD, 30));
+		
+		JLabel shopname = new JLabel("JS Store");	//가게이름
+		normal_info.add(shopname);
+		shopname.setFont(new Font("Serif", Font.BOLD, 50));
+		
+		JLabel customer_id = new JLabel();	//현재 접속한 CUSTOMER의 ID표시
+		normal_info.add(customer_id);
+		customer_id.setText("Welcome " + "ID" + "!");
+		date_info.setFont(new Font("Serif", Font.BOLD, 20));
 		
 		//기본탭 생성
 		JTabbedPane selectPanel = new JTabbedPane();
@@ -58,9 +83,10 @@ public class customer_interface extends JFrame implements ActionListener{
 			
 		}*/
 		
-		product.add(major_category);
-		
 		selectPanel.addTab("SHOPPINTBAG", shoppingbag);
+		//SHOPPINGBAG탭 디자인
+		
+		
 		selectPanel.addTab("USER_INFO", user_info);
 		
 	}
