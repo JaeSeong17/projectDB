@@ -12,7 +12,7 @@ import java.util.Calendar;
 //admin 계정으로 로그인시 띄우는 화면
 public class admin_interface extends JFrame implements ActionListener{
 	
-	public admin_interface() {
+	public admin_interface(Connection conn) {
 		
 		setSize(1000, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
