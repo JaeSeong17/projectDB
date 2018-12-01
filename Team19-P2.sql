@@ -39,7 +39,7 @@ CREATE TABLE CUSTOMER (
 	First_name VARCHAR(30),
 	Last_name VARCHAR(30),
 	Sex CHAR,
-	Age INT(5),
+	Birthdate DATE,
 	Job VARCHAR(30),
 	/*Count INT(11) AUTO_INCREMENT,*/
 	PRIMARY KEY (Cus_id)
@@ -258,51 +258,51 @@ INSERT INTO CATEGORY VALUES (230005, 23, 2);
 
 
 
-INSERT INTO CUSTOMER VALUES ('do1234', 'sedo1234', 'Seoul', '010-1234-1234', 'DOYUNE', 'KIM', 'M', 21, 'Student');
-INSERT INTO CUSTOMER VALUES ('hj5678', 'seha5678', 'Seoul', '010-1524-5678', 'HAJUNE', 'GO', 'M', 25, 'Student');
-INSERT INTO CUSTOMER VALUES ('ha2075', 'seha0275', 'Seoul', '010-1845-0275', 'HAYUNE', 'PARK', 'W', 24, 'Student');
-INSERT INTO CUSTOMER VALUES ('se1594', 'buse1594', 'Busan', '010-1891-1594', 'SEOYUNE', 'SHIN', 'W', 30, 'Teacher');
-INSERT INTO CUSTOMER VALUES ('se5749', 'buse5749', 'Busan', '010-9374-5749', 'SEYEON', 'KIM', 'W', 35, 'Driver');
-INSERT INTO CUSTOMER VALUES ('ha1534', 'buha1534', 'Busan', '010-9502-1534', 'HAEUN', 'KANG', 'W', 48, 'House');
-INSERT INTO CUSTOMER VALUES ('seo9106', 'daeseo9106', 'Daegu', '010-9757-9106', 'SEOJUNE', 'PARK', 'M', 44, 'House');
-INSERT INTO CUSTOMER VALUES ('siu5732', 'daesiu5732', 'Daegu', '010-2859-5732', 'SIU', 'KIM', 'W', 17, 'Student');
-INSERT INTO CUSTOMER VALUES ('min1534', 'daemin1534', 'Daegu', '010-2983-1534', 'MINJUNE', 'DO', 'M', 19, 'Student');
-INSERT INTO CUSTOMER VALUES ('ye7581', 'inye7581', 'Incheon', '010-2365-7581', 'YEJUNE', 'DO', 'W', 30, 'Plumber');
-INSERT INTO CUSTOMER VALUES ('ji0928', 'inji0928', 'Incheon', '010-2163-0928', 'JIYU', 'KIM', 'W', 31, 'Seller');
-INSERT INTO CUSTOMER VALUES ('jiu1043', 'injiu1043', 'Incheon', '010-8305-1043', 'JIU', 'SEO', 'M', 22, 'Student');
-INSERT INTO CUSTOMER VALUES ('ha1483', 'ulha1483', 'Ulsan', '010-8013-1483', 'HARIN', 'IM', 'W', 21, 'Student');
-INSERT INTO CUSTOMER VALUES ('sua6839', 'ulsua6839', 'Ulsan', '010-8285-6839', 'SUA', 'KIM', 'W', 27, 'ClothDesigner');
-INSERT INTO CUSTOMER VALUES ('jia6830', 'uljia6830', 'Ulsan', '010-7123-6830', 'JIA', 'YEE', 'W', 26, 'Engineer');
-INSERT INTO CUSTOMER VALUES ('ju0987', 'gwanju0987', 'Gwangju', '010-7987-0987', 'JUWON', 'KIM', 'M', 26, NULL);
-INSERT INTO CUSTOMER VALUES ('yuj0948', 'gwanyu0948', 'Gwangju', '010-7876-0948', 'YUJUNE', 'HA', 'M', 24, NULL);
-INSERT INTO CUSTOMER VALUES ('jiho3521', 'gwanji3521', 'Gwangju', '010-7765-3521', 'JIHO', 'KANG', 'M', 25, NULL);
-INSERT INTO CUSTOMER VALUES ('junu4253', 'daeju4253', 'Daejeon', '010-7777-4253', 'JUNU', 'KIM', 'M', 38, NULL);
-INSERT INTO CUSTOMER VALUES ('sin3925', 'daese3925', 'Daejeon', '010-7668-3925', 'SEOA', 'SIN', 'W', 33, NULL);
-INSERT INTO CUSTOMER VALUES ('jih9999', 'daeji9999', 'Daejeon', '010-3412-9999', 'JIHUNE', 'KIM', 'M', 32, NULL);
-INSERT INTO CUSTOMER VALUES ('jin0014', 'gyeonjin0014', 'Gyeonggi-do', '010-3123-0014', 'JINYUNG', 'KIM', 'M', 35, NULL);
-INSERT INTO CUSTOMER VALUES ('jenny1532', 'gyeonjen1532', 'Gyeonggi-do', '010-3131-1532', 'JENNY', 'KIM', 'W', 35, NULL);
-INSERT INTO CUSTOMER VALUES ('minju1526', 'gyeongmin1526', 'Gyeonggi-do', '010-3213-1526', 'MINJU', 'PARK', 'W', 35, NULL);
-INSERT INTO CUSTOMER VALUES ('su6758', 'gangsu6758', 'Gangwon-do', '010-3333-6758', 'SUMIN', 'SEO', 'M', 43, NULL);
-INSERT INTO CUSTOMER VALUES ('somi5123', 'gangso5123', 'Gangwon-do', '010-3746-5123', 'SOMI', 'HAN', 'W', 39, NULL);
-INSERT INTO CUSTOMER VALUES ('sua4123', 'gangsu4123', 'Gangwon-do', '010-4462-4123', 'SUA', 'HAN', 'W', 40, NULL);
-INSERT INTO CUSTOMER VALUES ('susu1152', 'chunghye1152', 'Chungcheongbuk-do', '010-1111-1152', 'HYEONSU', 'HAN', 'M', 40, NULL);
-INSERT INTO CUSTOMER VALUES ('jiy4235', 'chungji4235', 'Chungcheongbuk-do', '010-1131-4235', 'JIYUNG', 'KANG', 'W', 42, NULL);
-INSERT INTO CUSTOMER VALUES ('dodo9385', 'chungdo9385', 'Chungcheongbuk-do', '010-0000-9385', 'DOHYEON', 'KIM', 'M', 37, NULL);
-INSERT INTO CUSTOMER VALUES ('sub2361', 'chungsu2361', 'Chungcheongnam-do', '010-6123-2361', 'SUBIN', 'BAE', 'W', 37, NULL);
-INSERT INTO CUSTOMER VALUES ('jimi6940', 'chungji6940', 'Chungcheongnam-do', '010-6695-6940', 'JIMIN', 'PARK', 'W', 37, NULL);
-INSERT INTO CUSTOMER VALUES ('dong1235', 'chungdong1235', 'Chungcheongnam-do', '010-6696-1235', 'DONGHYEON', 'KIM', 'M', 34, NULL);
-INSERT INTO CUSTOMER VALUES ('tae0000', 'jeoltae0000', 'Jeollabuk-do', '010-6909-0000', 'TAEYEONG', 'HAN', 'M', '29', NULL);
-INSERT INTO CUSTOMER VALUES ('dae8768', 'jeoldae8768', 'Jeollabuk-do', '010-6876-8768', 'DAEGYU', 'DO', 'M', 28, NULL);
-INSERT INTO CUSTOMER VALUES ('gye0001', 'jeolgye0001', 'Jeollabuk-do', '010-1000-0001', 'GYEONO', 'GO', 'M', 26, NULL);
-INSERT INTO CUSTOMER VALUES ('so5555', 'jeolso5555', 'Jeollanam-do', '010-9293-5555', 'SOYOUNG', 'GO', 'W', 18, NULL);
-INSERT INTO CUSTOMER VALUES ('jiw9595', 'jeolji9595', 'Jeollanam-do', '010-5559-9595', 'JIWON', 'KIM', 'W', 19, NULL);
-INSERT INTO CUSTOMER VALUES ('suz1111', 'jeolsu1111', 'Jeollanam-do', '010-6758-1111', 'SUZI', 'BAE', 'W', 20, NULL);
-INSERT INTO CUSTOMER VALUES ('jue7788', 'gyeongju7788', 'Gyeonsangbuk-do', '010-7432-7788', 'JUEUN', 'BAE', 'W', 20, NULL);
-INSERT INTO CUSTOMER VALUES ('hoho9090', 'gyeonhye9090', 'Gyeonsangbuk-do', '010-0909-9090', 'HYEONHO', 'BAE', 'M', 23, NULL);
-INSERT INTO CUSTOMER VALUES ('minh6663', 'gyeonmin6663', 'Gyeonsangbuk-do', '010-3666-6663', 'MINHO', 'YEE', 'M', 36, NULL);
-INSERT INTO CUSTOMER VALUES ('min5575', 'gyeongmin5575', 'Gyeonsangnam-do', '010-7767-5575', 'MINHEE', 'KIM', 'W', 33, NULL);
-INSERT INTO CUSTOMER VALUES ('jig0151', 'gyeongji0151', 'Gyeonsangnam-do', '010-1299-0151', 'JIGWANG', 'YU', 'M', 25, NULL);
-INSERT INTO CUSTOMER VALUES ('juh9922', 'gyeongju9922', 'Gyeonsangnam-do', '010-2299-9922', 'JUHO', 'YEE', 'M', 37, NULL);
+INSERT INTO CUSTOMER VALUES ('do1234', 'sedo1234', 'Seoul', '010-1234-1234', 'DOYUNE', 'KIM', 'M', '1998-11-30', 'Student');
+INSERT INTO CUSTOMER VALUES ('hj5678', 'seha5678', 'Seoul', '010-1524-5678', 'HAJUNE', 'GO', 'M', '1994-03-30', 'Student');
+INSERT INTO CUSTOMER VALUES ('ha2075', 'seha0275', 'Seoul', '010-1845-0275', 'HAYUNE', 'PARK', 'W', '1995-02-17', 'Student');
+INSERT INTO CUSTOMER VALUES ('se1594', 'buse1594', 'Busan', '010-1891-1594', 'SEOYUNE', 'SHIN', 'W', '1989-05-07', 'Teacher');
+INSERT INTO CUSTOMER VALUES ('se5749', 'buse5749', 'Busan', '010-9374-5749', 'SEYEON', 'KIM', 'W', '1984-07-24', 'Driver');
+INSERT INTO CUSTOMER VALUES ('ha1534', 'buha1534', 'Busan', '010-9502-1534', 'HAEUN', 'KANG', 'W', '1971-08-12', 'House');
+INSERT INTO CUSTOMER VALUES ('seo9106', 'daeseo9106', 'Daegu', '010-9757-9106', 'SEOJUNE', 'PARK', 'M', '1975-01-31', 'House');
+INSERT INTO CUSTOMER VALUES ('siu5732', 'daesiu5732', 'Daegu', '010-2859-5732', 'SIU', 'KIM', 'W', '2002-10-04', 'Student');
+INSERT INTO CUSTOMER VALUES ('min1534', 'daemin1534', 'Daegu', '010-2983-1534', 'MINJUNE', 'DO', 'M', '2000-06-07', 'Student');
+INSERT INTO CUSTOMER VALUES ('ye7581', 'inye7581', 'Incheon', '010-2365-7581', 'YEJUNE', 'DO', 'W', '1989-07-19', 'Plumber');
+INSERT INTO CUSTOMER VALUES ('ji0928', 'inji0928', 'Incheon', '010-2163-0928', 'JIYU', 'KIM', 'W', '1988-05-29', 'Seller');
+INSERT INTO CUSTOMER VALUES ('jiu1043', 'injiu1043', 'Incheon', '010-8305-1043', 'JIU', 'SEO', 'M', '1997-04-18', 'Student');
+INSERT INTO CUSTOMER VALUES ('ha1483', 'ulha1483', 'Ulsan', '010-8013-1483', 'HARIN', 'IM', 'W', '1998-09-09', 'Student');
+INSERT INTO CUSTOMER VALUES ('sua6839', 'ulsua6839', 'Ulsan', '010-8285-6839', 'SUA', 'KIM', 'W', '1992-03-05', 'ClothDesigner');
+INSERT INTO CUSTOMER VALUES ('jia6830', 'uljia6830', 'Ulsan', '010-7123-6830', 'JIA', 'YEE', 'W', '1993-12-17', 'Engineer');
+INSERT INTO CUSTOMER VALUES ('ju0987', 'gwanju0987', 'Gwangju', '010-7987-0987', 'JUWON', 'KIM', 'M', '1993-06-02', NULL);
+INSERT INTO CUSTOMER VALUES ('yuj0948', 'gwanyu0948', 'Gwangju', '010-7876-0948', 'YUJUNE', 'HA', 'M', '1995-05-05', NULL);
+INSERT INTO CUSTOMER VALUES ('jiho3521', 'gwanji3521', 'Gwangju', '010-7765-3521', 'JIHO', 'KANG', 'M', '1994-04-02', NULL);
+INSERT INTO CUSTOMER VALUES ('junu4253', 'daeju4253', 'Daejeon', '010-7777-4253', 'JUNU', 'KIM', 'M', '1981-05-06', NULL);
+INSERT INTO CUSTOMER VALUES ('sin3925', 'daese3925', 'Daejeon', '010-7668-3925', 'SEOA', 'SIN', 'W', '1986-08-30', NULL);
+INSERT INTO CUSTOMER VALUES ('jih9999', 'daeji9999', 'Daejeon', '010-3412-9999', 'JIHUNE', 'KIM', 'M', '1989-09-13', NULL);
+INSERT INTO CUSTOMER VALUES ('jin0014', 'gyeonjin0014', 'Gyeonggi-do', '010-3123-0014', 'JINYUNG', 'KIM', 'M', '1984-11-11', NULL);
+INSERT INTO CUSTOMER VALUES ('jenny1532', 'gyeonjen1532', 'Gyeonggi-do', '010-3131-1532', 'JENNY', 'KIM', 'W', '1984-12-21', NULL);
+INSERT INTO CUSTOMER VALUES ('minju1526', 'gyeongmin1526', 'Gyeonggi-do', '010-3213-1526', 'MINJU', 'PARK', 'W', '1984-10-31', NULL);
+INSERT INTO CUSTOMER VALUES ('su6758', 'gangsu6758', 'Gangwon-do', '010-3333-6758', 'SUMIN', 'SEO', 'M', '1976-05-28', NULL);
+INSERT INTO CUSTOMER VALUES ('somi5123', 'gangso5123', 'Gangwon-do', '010-3746-5123', 'SOMI', 'HAN', 'W', '1980-04-14', NULL);
+INSERT INTO CUSTOMER VALUES ('sua4123', 'gangsu4123', 'Gangwon-do', '010-4462-4123', 'SUA', 'HAN', 'W', '1979-08-26', NULL);
+INSERT INTO CUSTOMER VALUES ('susu1152', 'chunghye1152', 'Chungcheongbuk-do', '010-1111-1152', 'HYEONSU', 'HAN', 'M', '1979-05-17', NULL);
+INSERT INTO CUSTOMER VALUES ('jiy4235', 'chungji4235', 'Chungcheongbuk-do', '010-1131-4235', 'JIYUNG', 'KANG', 'W', '1977-04-23', NULL);
+INSERT INTO CUSTOMER VALUES ('dodo9385', 'chungdo9385', 'Chungcheongbuk-do', '010-0000-9385', 'DOHYEON', 'KIM', 'M', '1982-01-21', NULL);
+INSERT INTO CUSTOMER VALUES ('sub2361', 'chungsu2361', 'Chungcheongnam-do', '010-6123-2361', 'SUBIN', 'BAE', 'W', '1982-06-24', NULL);
+INSERT INTO CUSTOMER VALUES ('jimi6940', 'chungji6940', 'Chungcheongnam-do', '010-6695-6940', 'JIMIN', 'PARK', 'W', '1982-05-23', NULL);
+INSERT INTO CUSTOMER VALUES ('dong1235', 'chungdong1235', 'Chungcheongnam-do', '010-6696-1235', 'DONGHYEON', 'KIM', 'M', '1983-07-08', NULL);
+INSERT INTO CUSTOMER VALUES ('tae0000', 'jeoltae0000', 'Jeollabuk-do', '010-6909-0000', 'TAEYEONG', 'HAN', 'M', '1990-10-10', NULL);
+INSERT INTO CUSTOMER VALUES ('dae8768', 'jeoldae8768', 'Jeollabuk-do', '010-6876-8768', 'DAEGYU', 'DO', 'M', '1991-04-19', NULL);
+INSERT INTO CUSTOMER VALUES ('gye0001', 'jeolgye0001', 'Jeollabuk-do', '010-1000-0001', 'GYEONO', 'GO', 'M', '1994-03-13', NULL);
+INSERT INTO CUSTOMER VALUES ('so5555', 'jeolso5555', 'Jeollanam-do', '010-9293-5555', 'SOYOUNG', 'GO', 'W', '2001-09-13', NULL);
+INSERT INTO CUSTOMER VALUES ('jiw9595', 'jeolji9595', 'Jeollanam-do', '010-5559-9595', 'JIWON', 'KIM', 'W', '2000-05-03', NULL);
+INSERT INTO CUSTOMER VALUES ('suz1111', 'jeolsu1111', 'Jeollanam-do', '010-6758-1111', 'SUZI', 'BAE', 'W', '1999-05-18', NULL);
+INSERT INTO CUSTOMER VALUES ('jue7788', 'gyeongju7788', 'Gyeonsangbuk-do', '010-7432-7788', 'JUEUN', 'BAE', 'W', '1999-03-06', NULL);
+INSERT INTO CUSTOMER VALUES ('hoho9090', 'gyeonhye9090', 'Gyeonsangbuk-do', '010-0909-9090', 'HYEONHO', 'BAE', 'M', '1996-04-13', NULL);
+INSERT INTO CUSTOMER VALUES ('minh6663', 'gyeonmin6663', 'Gyeonsangbuk-do', '010-3666-6663', 'MINHO', 'YEE', 'M', '1983-07-13', NULL);
+INSERT INTO CUSTOMER VALUES ('min5575', 'gyeongmin5575', 'Gyeonsangnam-do', '010-7767-5575', 'MINHEE', 'KIM', 'W', '1986-08-12', NULL);
+INSERT INTO CUSTOMER VALUES ('jig0151', 'gyeongji0151', 'Gyeonsangnam-do', '010-1299-0151', 'JIGWANG', 'YU', 'M', '1994-10-20', NULL);
+INSERT INTO CUSTOMER VALUES ('juh9922', 'gyeongju9922', 'Gyeonsangnam-do', '010-2299-9922', 'JUHO', 'YEE', 'M', '1982-01-28', NULL);
 INSERT INTO CUSTOMER VALUES ('eari3812', 'jeeari3812', 'Jeju-do', '010-6633-3812', 'EARI', 'IM', NULL, NULL, NULL);
 INSERT INTO CUSTOMER VALUES ('doh1000', 'jedo1000', 'Jeju-do', '010-7671-1000', 'DOHEE', 'HAN', NULL, NULL, NULL);
 INSERT INTO CUSTOMER VALUES ('june5553', 'jeju5553', 'Jeju-do', '010-0666-5553', 'JUNEHEE', 'HAN', NULL, NULL, NULL);
