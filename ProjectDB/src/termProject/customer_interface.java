@@ -9,6 +9,7 @@ import java.sql.*;
 import javax.swing.*;
 import java.util.Calendar;
 
+//customer 계정으로 로그인시 띄우는 화면
 public class customer_interface extends JFrame implements ActionListener{
 	
 	private Calendar today = Calendar.getInstance();
