@@ -158,7 +158,6 @@ public class customer_interface extends JFrame implements ActionListener{
 					item_table[i][j] = new JTable(item_info[i][j], item_column);
 					minor_panel[j].setLayout(new BorderLayout());
 					minor_panel[j].add(item_table[i][j], BorderLayout.CENTER);
-					minor_panel[j].add();
 					item_table[i][j].getColumn("Product").setPreferredWidth(150);
 					item_table[i][j].getColumn("Price").setPreferredWidth(100);
 					item_table[i][j].getColumn("Producer").setPreferredWidth(200);
