@@ -13,6 +13,9 @@ import java.util.Calendar;
 public class customer_interface extends JFrame implements ActionListener{
 	
 	private Calendar today = Calendar.getInstance();
+	
+	Statement stmt = null;
+	ResultSet rs = null;
 
 	public customer_interface() {
 		
@@ -84,11 +87,25 @@ public class customer_interface extends JFrame implements ActionListener{
 			
 		}*/
 		
+		//----------------------------------------------------------------
+		
 		selectPanel.addTab("SHOPPINTBAG", shoppingbag);
 		//SHOPPINGBAG탭 디자인
 		
+		//----------------------------------------------------------------
 		
 		selectPanel.addTab("USER_INFO", user_info);
+		
+		user_info.setLayout(new GridLayout(4, 0));
+		JLabel Name_Label = new JLabel("Name : "/*쿼리로 불러온 lastname + firstname*/);
+		JLabel ID_Label  = new JLabel("ID : " + ""/*쿼리로 불러온 ID 정보*/);	
+		JLabel password_Label = new JLabel("PASSWORD : ");
+		JTextField password_modify = new JTextField(/*쿼리로 불러온 password정보*/); // password_Label 뒤에 붙임
+		JLabel Address_Label = new JLabel("Address : ");
+		JTextField Address_modify = new JTextField(/*쿼리로 불러온 address정보*/); // address_Label 뒤에 붙임
+		//address 나중에 예외처리 해주기
+		JLabel Phonenum_Label = new JLabel("Address : ");
+		JTextField Phonenum_modify = new JTextField(/*쿼리로 불러온 Phone_num정보*/); // Phonenum_Label 뒤에 붙
 		
 	}
 	
