@@ -75,7 +75,6 @@ public class login_win extends JFrame{
 					rs = stmt.executeQuery(sql1);
 					
 					// 6. print result of execution
-					//로그인 정보 불일치시
 					if(rs.isBeforeFirst()==true) {
 						while(rs.next()) {
 							String adminID = rs.getString(1);
@@ -102,7 +101,7 @@ public class login_win extends JFrame{
 							String Fname = rs.getString(1);
 							String Lname = rs.getString(2);
 						
-							System.out.println(Fname + " - " + Lname);
+							System.out.println("Login successed : " +  Fname + " - " + Lname);
 							dispose();
 							
 							customer_interface cus_inter = new customer_interface();
@@ -117,6 +116,7 @@ public class login_win extends JFrame{
 		});
 		
 		
+		//회원가입 버튼 구현부
 		JButton newAccBtn = new JButton("Register new account");
 		newAccBtn.setFont(new Font("San Serif", Font.PLAIN, 15));
 		newAccBtn.setForeground(Color.GRAY);
@@ -126,7 +126,7 @@ public class login_win extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				SubRegisterFrame srf = new SubRegisterFrame();
+				SubRegisterFrame srf = new SubRegisterFrame(conn);
 				srf.setVisible(true);
 			}
 			
@@ -163,13 +163,103 @@ public class login_win extends JFrame{
 	 	*/
 		private static final long serialVersionUID = 1L;
 		
-		Statement insertCusData = null;
-		
-		public SubRegisterFrame() {
+		public SubRegisterFrame(Connection conn) {
 			super("Register Window");
-			//setSize()
+			setSize(260, 500);
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			Container subcon = this.getContentPane();
+			subcon.setBackground(Color.GRAY);
+			subcon.setLayout(null);
+			
+			//회원가입 - 제목 라벨
+			JLabel regTitle = new JLabel("Register New Account");
+			regTitle.setForeground(Color.WHITE);
+			regTitle.setFont(new Font("SanSerif", Font.ITALIC, 20));
+			
+			subcon.add(regTitle);
+			regTitle.setBounds(20, 20, 240, 30);
+			
+			//회원가입 - 아이디 입력
+			JLabel regID = new JLabel("User ID");
+			regID.setFont(new Font("SanSerif", Font.PLAIN, 15));
+			
+			JTextField input_regID = new JTextField("");
+			input_regID.setFont(new Font("San Serif", Font.PLAIN, 15));
+			
+			//회원가입 - 아이디 중복체크 확인 문장 출력부
+			JLabel acceptStr = new JLabel("Accepted");
+			acceptStr.setFont(new Font("San Serif", Font.PLAIN, 10));
+			acceptStr.setForeground(Color.GREEN);
+			
+			JLabel rejectStr = new JLabel("Already Existed ID");
+			rejectStr.setFont(new Font("San Serif", Font.PLAIN, 10));
+			rejectStr.setForeground(Color.RED);
+
+			
+			//회원가입 - 아이디 중복체크 버튼
+			JButton checkRedundancy = new JButton("check");
+			checkRedundancy.setFont(new Font("SanSerif", Font.PLAIN, 10));
+			checkRedundancy.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					
+					try {
+						// 아이디 중복체크 쿼리
+						stmt = conn.createStatement();
+						String createID = input_regID.getText();
+						String sql = "SELECT Cus_id FROM CUSTOMER WHERE Cus_id = \'" + createID + "\'";
+						rs = stmt.executeQuery(sql);
+						
+						// 중복되는 아이디 없을경우 accept 출력
+						if(rs.isBeforeFirst()==false) {
+							acceptStr.setVisible(true);
+							rejectStr.setVisible(false);
+							
+						}else {// 중복되는 아이디 있을경우 reject 출력
+							while(rs.next()) {
+								acceptStr.setVisible(false);
+								rejectStr.setVisible(true);
+								String Cus_id = rs.getString(1);
+								System.out.println("CUSTOMER ID already existed - " + Cus_id);
+							}
+						}
+						
+					}catch(SQLException ex) {
+						System.out.println("Error : " + ex);
+					}
+				}
+				
+			});
+			
+			subcon.add(regID);
+			regID.setBounds(20, 60, 80, 20);
+			subcon.add(input_regID);
+			input_regID.setBounds(100, 60, 100, 20);
+			subcon.add(checkRedundancy);
+			checkRedundancy.setBounds(200, 60, 40, 20);
+			subcon.add(acceptStr);
+			acceptStr.setBounds(100, 80, 100, 15);
+			acceptStr.setVisible(false);
+			subcon.add(rejectStr);
+			rejectStr.setBounds(100, 80, 100, 15);
+			rejectStr.setVisible(false);
 			
 			
+			//회원가입 - 비밀번호 입력
+			
+			//회원가입 - 이름
+			
+			//회원가입 - 주소
+			
+			//회원가입 - 전화번호
+			
+			//회원가입 - 성별
+			
+			//회원가입 - 생년월일
+			
+			//회원가입 - 직업
 			
 		}
 
