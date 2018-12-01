@@ -83,7 +83,7 @@ public class login_win extends JFrame{
 							System.out.println(adminID + " - " + adminPASS);
 							dispose();
 							
-							admin_interface ad_inter = new admin_interface();
+							admin_interface ad_inter = new admin_interface(conn);
 							ad_inter.setVisible(true);
 						}
 					}
@@ -104,7 +104,7 @@ public class login_win extends JFrame{
 							System.out.println("Login successed : " +  Fname + " - " + Lname);
 							dispose();
 							
-							customer_interface cus_inter = new customer_interface();
+							customer_interface cus_inter = new customer_interface(conn);
 							cus_inter.setVisible(true);
 						}
 					}
@@ -248,6 +248,11 @@ public class login_win extends JFrame{
 			
 			
 			//회원가입 - 비밀번호 입력
+			JLabel regPass = new JLabel("User PASSWORD");
+			regID.setFont(new Font("SanSerif", Font.PLAIN, 15));
+			
+			JTextField input_regPass = new JTextField("");
+			input_regID.setFont(new Font("San Serif", Font.PLAIN, 15));
 			
 			//회원가입 - 이름
 			
