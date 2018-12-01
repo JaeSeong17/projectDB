@@ -15,7 +15,7 @@ public class customer_interface extends JFrame implements ActionListener{
 	private Calendar today = Calendar.getInstance();
 	
 	Statement stmt = null;
-	ResultSet[] rs = null;
+	ResultSet rs;
 	String sql = null;
 
 	public customer_interface(Connection conn) {
@@ -66,45 +66,57 @@ public class customer_interface extends JFrame implements ActionListener{
 		product.add(major_category);
 		//major_category에 DB에서 카테고리 이름 끌어와서 설정
 		
-		JPanel[] major_panel = null;			//개수를 동적으로 넣을지 정적으로 넣을지 선택
-		JTabbedPane[] minor_category = null;	//major_panel과 같은개수
-		JPanel[] minor_panel = null;			//여기에 제품정보 출력
+		JPanel[] major_panel = new JPanel[10];			//개수를 동적으로 넣을지 정적으로 넣을지 선택
+		JTabbedPane[] minor_category = new JTabbedPane[10];	//major_panel과 같은개수
+		JPanel[] minor_panel = new JPanel[10];			//여기에 제품정보 출력
 		
 		//동적으로 갯수, 이름 맞춰서 반복문 통해서 정보 집어넣음(3중 반복문)
 		//"중요" 배열건드릴때 nullpointerexception 생각하고 만들것
 		
-		sql = "SELECT MAJOR_CATEGORY.Major_tag FROM MAJOR_CATEGORY";
 		try {
-			rs[0] = stmt.executeQuery(sql);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		int i = 0;
-		
-		try {
-			while(rs[0].next()) {
+			
+			sql = "SELECT Major_tag, Major_number FROM MAJOR_CATEGORY";
+			String[] major_category_info = new String[10];
+			int[] major_category_number = new int[10];
+			int num_of_major = 0;
+			
+			rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				
+				major_category_info[num_of_major] = rs.getString(1);
+				major_category_number[num_of_major] = rs.getInt(2);
+				
+				num_of_major++;
+				
+			}
+			
+			for(int i=0;i<num_of_major;i++) {
 
 			 	major_panel[i] = new JPanel();
 			 	minor_category[i] = new JTabbedPane();
-				major_category.addTab(rs[0].getString(1), major_panel[i]);
+				major_category.addTab(major_category_info[i], major_panel[i]);
 				major_panel[i].add(minor_category[i]);
 				
-				sql = "SELECT MINOR_CATEGORY.Minor_tag FROM MINOR_CATEGORY";
-				try {
-					rs[1] = stmt.executeQuery(sql);
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				sql = "SELECT Minor_tag FROM MINOR_CATEGORY WHERE Major_number = " + major_category_number[i];
+				
+				rs = stmt.executeQuery(sql);
+				
+				String[] minor_category_info = new String[10];
+				int num_of_minor = 0;
+				
+				while(rs.next()) {
+					
+					minor_category_info[num_of_minor] = rs.getString(1);
+					
+					num_of_minor++;
+					
 				}
-				
-				int j = 0;
 
-				while(rs[1].next()) {
+				for(int j=0;j<num_of_minor;j++) {
 				
-					minor_panel[i] = new JPanel();
-					minor_category[i].addTab(rs[1].getString(1), minor_panel[i]);
+					minor_panel[j] = new JPanel();
+					minor_category[i].addTab(minor_category_info[j], minor_panel[j]);
 					
 //					for(int k=0;k<(category별 item갯수);k++) {
 //					
@@ -112,13 +124,10 @@ public class customer_interface extends JFrame implements ActionListener{
 //
 //					}
 					
-					j++;
-					
 				}
-				
-				i++;
-				
+
 			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
