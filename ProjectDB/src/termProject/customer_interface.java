@@ -57,7 +57,6 @@ public class customer_interface extends JFrame implements ActionListener{
 		add(selectPanel);
 		
 		JPanel product = new JPanel();
-		product.setSize(800, 500);
 		JPanel shoppingbag = new JPanel();
 		JPanel user_info = new JPanel();
 		
@@ -72,7 +71,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		JPanel[] minor_panel = new JPanel[10];			//여기에 제품정보 출력
 		JTable[][] item_table = new JTable[10][10];		//ITEM정보 들어갈 TABLE
 		String[][][][] item_info = new String[10][10][20][4];
-		String item_column[] = { "Product", "Price", "Producer, Origin"};
+		String[] item_column = {"Product", "Price", "Producer", "Origin"};
 		
 		//동적으로 갯수, 이름 맞춰서 반복문 통해서 정보 집어넣음(3중 반복문)
 		//"중요" 배열건드릴때 nullpointerexception 생각하고 만들것
@@ -100,6 +99,7 @@ public class customer_interface extends JFrame implements ActionListener{
 			 	minor_category[i] = new JTabbedPane();
 				major_category.addTab(major_category_info[i], major_panel[i]);
 				major_panel[i].add(minor_category[i]);
+				major_panel[i].setPreferredSize(new Dimension(1000, 800));
 				
 				sql = "SELECT Minor_tag, Minor_number FROM MINOR_CATEGORY WHERE Major_number = " + major_category_number[i];
 				
@@ -121,9 +121,10 @@ public class customer_interface extends JFrame implements ActionListener{
 				
 					minor_panel[j] = new JPanel();
 					minor_category[i].addTab(minor_category_info[j], minor_panel[j]);
+					minor_panel[j].setPreferredSize(new Dimension(1000, 800));
 					
 					sql = "SELECT * FROM ITEM, CATEGORY WHERE CATEGORY.Product_number = ITEM.Product_number AND"
-							+ " CATEGORY.Minor_number = " + major_category_number[i]*10 + minor_category_number[j];
+							+ " CATEGORY.Minor_number = " + minor_category_number[j];
 					
 					rs = stmt.executeQuery(sql);
 					
@@ -132,30 +133,36 @@ public class customer_interface extends JFrame implements ActionListener{
 					while(rs.next()) {
 						
 						item_info[i][j][num_of_item][0] = rs.getString(2);
-						item_info[i][j][num_of_item][1] = rs.getString(4);
-						item_info[i][j][num_of_item][2] = rs.getString(5);
+						item_info[i][j][num_of_item][1] = rs.getString(6);
+						item_info[i][j][num_of_item][2] = rs.getString(7);
 
 						num_of_item++;
 						
 					}
 					
 					for(int k=0;k<num_of_item;k++) {
+
+						sql = "SELECT * FROM PRODUCERLOCATION P WHERE P.Pl_num = " + item_info[i][j][k][2];
 					
-					sql = "SELECT * FROM PRODUCERLOCATION P WHERE P.Pl_num = " + item_info[i][j][num_of_item][2];
-					
-					rs = stmt.executeQuery(sql);
+						rs = stmt.executeQuery(sql);
 					
 						while(rs.next()) {
 						
-							item_info[i][j][num_of_item][2] = rs.getString(2);
-							item_info[i][j][num_of_item][3] = rs.getString(3);
-						
-							item_table[i][j] = new JTable(item_info[i][j], item_column);
-							minor_panel[j].add(item_table[i][j]);
+							item_info[i][j][k][2] = rs.getString(2);
+							item_info[i][j][k][3] = rs.getString(3);
 						
 						}
 					
 					}
+					
+					item_table[i][j] = new JTable(item_info[i][j], item_column);
+					minor_panel[j].setLayout(new BorderLayout());
+					minor_panel[j].add(item_table[i][j], BorderLayout.CENTER);
+					minor_panel[j].add();
+					item_table[i][j].getColumn("Product").setPreferredWidth(150);
+					item_table[i][j].getColumn("Price").setPreferredWidth(100);
+					item_table[i][j].getColumn("Producer").setPreferredWidth(200);
+					item_table[i][j].getColumn("Origin").setPreferredWidth(200);
 					
 				}
 
