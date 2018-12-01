@@ -52,12 +52,11 @@ public class customer_interface extends JFrame implements ActionListener{
 		customer_id.setText("Welcome " + "ID" + "!");
 		date_info.setFont(new Font("Serif", Font.BOLD, 20));
 		
-		//기본탭 생성-----------------------------------------------------
+		//기본탭 생성
 		JTabbedPane selectPanel = new JTabbedPane();
 		add(selectPanel);
 		
 		JPanel product = new JPanel();
-		product.setSize(800, 500);
 		JPanel shoppingbag = new JPanel();
 		JPanel user_info = new JPanel();
 		
@@ -70,9 +69,6 @@ public class customer_interface extends JFrame implements ActionListener{
 		JPanel[] major_panel = new JPanel[10];			//개수를 동적으로 넣을지 정적으로 넣을지 선택
 		JTabbedPane[] minor_category = new JTabbedPane[10];	//major_panel과 같은개수
 		JPanel[] minor_panel = new JPanel[10];			//여기에 제품정보 출력
-		JTable[][] item_table = new JTable[10][10];		//ITEM정보 들어갈 TABLE
-		String[][][][] item_info = new String[10][10][20][4];
-		String item_column[] = { "Product", "Price", "Producer, Origin"};
 		
 		//동적으로 갯수, 이름 맞춰서 반복문 통해서 정보 집어넣음(3중 반복문)
 		//"중요" 배열건드릴때 nullpointerexception 생각하고 만들것
@@ -90,6 +86,7 @@ public class customer_interface extends JFrame implements ActionListener{
 				
 				major_category_info[num_of_major] = rs.getString(1);
 				major_category_number[num_of_major] = rs.getInt(2);
+				
 				num_of_major++;
 				
 			}
@@ -101,18 +98,17 @@ public class customer_interface extends JFrame implements ActionListener{
 				major_category.addTab(major_category_info[i], major_panel[i]);
 				major_panel[i].add(minor_category[i]);
 				
-				sql = "SELECT Minor_tag, Minor_number FROM MINOR_CATEGORY WHERE Major_number = " + major_category_number[i];
+				sql = "SELECT Minor_tag FROM MINOR_CATEGORY WHERE Major_number = " + major_category_number[i];
 				
 				rs = stmt.executeQuery(sql);
 				
 				String[] minor_category_info = new String[10];
-				int[] minor_category_number = new int[10];
 				int num_of_minor = 0;
 				
 				while(rs.next()) {
 					
 					minor_category_info[num_of_minor] = rs.getString(1);
-					minor_category_number[num_of_minor] = rs.getInt(2);
+					
 					num_of_minor++;
 					
 				}
@@ -122,40 +118,11 @@ public class customer_interface extends JFrame implements ActionListener{
 					minor_panel[j] = new JPanel();
 					minor_category[i].addTab(minor_category_info[j], minor_panel[j]);
 					
-					sql = "SELECT * FROM ITEM, CATEGORY WHERE CATEGORY.Product_number = ITEM.Product_number AND"
-							+ " CATEGORY.Minor_number = " + major_category_number[i]*10 + minor_category_number[j];
-					
-					rs = stmt.executeQuery(sql);
-					
-					int num_of_item = 0;
-					
-					while(rs.next()) {
-						
-						item_info[i][j][num_of_item][0] = rs.getString(2);
-						item_info[i][j][num_of_item][1] = rs.getString(4);
-						item_info[i][j][num_of_item][2] = rs.getString(5);
-
-						num_of_item++;
-						
-					}
-					
-					for(int k=0;k<num_of_item;k++) {
-					
-					sql = "SELECT * FROM PRODUCERLOCATION P WHERE P.Pl_num = " + item_info[i][j][num_of_item][2];
-					
-					rs = stmt.executeQuery(sql);
-					
-						while(rs.next()) {
-						
-							item_info[i][j][num_of_item][2] = rs.getString(2);
-							item_info[i][j][num_of_item][3] = rs.getString(3);
-						
-							item_table[i][j] = new JTable(item_info[i][j], item_column);
-							minor_panel[j].add(item_table[i][j]);
-						
-						}
-					
-					}
+//					for(int k=0;k<(category별 item갯수);k++) {
+//					
+//						//minor_panel에 출력할 정보 만들
+//
+//					}
 					
 				}
 
