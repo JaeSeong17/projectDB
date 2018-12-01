@@ -15,34 +15,11 @@ public class login_win extends JFrame{
 	 *  -if there are not exist user data, send wrong data message
 	 */
 	private static final long serialVersionUID = 1L;
-
 	
+	Statement stmt = null;
+	ResultSet rs = null;
 	
-	private static Connection conn = null;
-	private Statement stmt = null;
-	private ResultSet rs = null;
-	
-	
-	public static void main(String[] args) {
-		try {
-			// 1. Driver loading (드라이버 로딩)
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			
-			// 2. connection (연결하기)
-			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Market?characterEncoding=UTF-8&serverTimezone=UTC","knu","comp322");
-			System.out.println("데이터 베이스 접속이 성공했습니다");
-		}catch(SQLException ex) {
-			System.out.println("SQLException:" + ex);
-		}catch(Exception ex) {
-			System.out.println("Exception:" + ex);
-		}
-		
-		login_win temp = new login_win();
-		temp.setVisible(true);
-		
-	}
-	
-	public login_win() {
+	public login_win(Connection conn) {
 		super("login_window");
 		setSize(260, 400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,23 +89,6 @@ public class login_win extends JFrame{
 				}catch(SQLException ex) {
 					System.out.println("Error : " + ex);
 				}
-				/*
-				finally{
-					try{
-						if( conn != null && !conn.isClosed()){
-							conn.close();
-				        }
-				        if( stmt != null && !stmt.isClosed()){
-				        		stmt.close();
-				        }
-				        if( rs != null && !rs.isClosed()){
-				        		rs.close();
-				        }
-					}
-				    catch( SQLException e){
-				        e.printStackTrace();
-				    }
-				}*/
 			}
 		});
 		
@@ -142,7 +102,8 @@ public class login_win extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				
+				SubRegisterFrame srf = new SubRegisterFrame();
+				srf.setVisible(true);
 			}
 			
 		});
@@ -169,7 +130,33 @@ public class login_win extends JFrame{
 
 	}
 	
+	
+
+	public class SubRegisterFrame extends JFrame implements ActionListener{ 
+		/**
+		* 회원가입 창 구현부
+		* 해당 정보 모두 입력시 DB로 쿼리 전달 " INSERT INTO CUSTOMER VALUES(...)"
+	 	*/
+		private static final long serialVersionUID = 1L;
+		
+		Statement insertCusData = null;
+		
+		public SubRegisterFrame() {
+			super("Register Window");
+			//setSize()
+			
+			
+			
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			dispose();
+		}
+	}
 }
+
 
 class HintTextField extends JTextField implements FocusListener {
 	/**
