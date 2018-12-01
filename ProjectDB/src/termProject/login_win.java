@@ -67,22 +67,46 @@ public class login_win extends JFrame{
 					// 4. write SQL query
 					String temp_id = input_id.getText(); //JTextField로부터 아이디입력값 전달
 					String temp_pass = input_pass.getText();//JTextField로부터 비밀번호 입력값 전달
-					String sql = "SELECT First_name, Last_name FROM CUSTOMER WHERE Cus_id = \'" + temp_id
+					String sql1 = "SELECT * FROM ADMIN";
+					String sql2 = "SELECT First_name, Last_name FROM CUSTOMER WHERE Cus_id = \'" + temp_id
 							+ "\' AND Cus_password = \'" + temp_pass + "\'";
 					
-					// 5. operate query
-					rs = stmt.executeQuery(sql);
+					// 5.operate query -> admin 계정인지 체크
+					rs = stmt.executeQuery(sql1);
 					
 					// 6. print result of execution
+					//로그인 정보 불일치시
+					if(rs.isBeforeFirst()==true) {
+						while(rs.next()) {
+							String adminID = rs.getString(1);
+							String adminPASS = rs.getString(2);
+						
+							System.out.println(adminID + " - " + adminPASS);
+							dispose();
+							
+							admin_interface ad_inter = new admin_interface();
+							ad_inter.setVisible(true);
+						}
+					}
+					
+					// 5. operate query -> 일반 회원인지 체크
+					rs = stmt.executeQuery(sql2);
+					
+					// 6. print result of execution
+					//로그인 정보 불일치시
 					if(rs.isBeforeFirst()==false) {
 						container.add(failMessage);
 						failMessage.setBounds(33, 200, 200, 20);
-					}else {
+					}else {//로그인 정보 일치
 						while(rs.next()) {
 							String Fname = rs.getString(1);
 							String Lname = rs.getString(2);
 						
 							System.out.println(Fname + " - " + Lname);
+							dispose();
+							
+							customer_interface cus_inter = new customer_interface();
+							cus_inter.setVisible(true);
 						}
 					}
 					
