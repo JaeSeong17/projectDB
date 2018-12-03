@@ -54,7 +54,7 @@ CREATE TABLE RETAILER(
 CREATE TABLE ITEM (
 	Product_number	int(10) NOT NULL,
 	Product_name 	varchar(30),
-	Date_of_manucfacture	DATE,
+	Date_of_manufacture	DATE,
 	Expiration_date	DATE,
 	Importer	varchar(30),
 	Price		int(10),
