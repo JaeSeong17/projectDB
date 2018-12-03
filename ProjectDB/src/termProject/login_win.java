@@ -37,22 +37,27 @@ public class login_win extends JFrame{
 		failMessage.setFont(new Font("SanSerif", Font.PLAIN, 10));
 		failMessage.setForeground(Color.RED);
 		
-		
+		// ID 입력란 상자 
 		JTextField input_id = new HintTextField("USER ID");
 		input_id.setFont(new Font("San Serif", Font.PLAIN, 15));
+		input_id.setFocusable(false);
+		input_id.setFocusable(true);
 
+		// Password 입력란 상자
 		JTextField input_pass = new HintTextField("PASSWORD");
 		input_pass.setFont(new Font("San Serif", Font.PLAIN, 15));
+		input_pass.setFocusable(false);
+		input_pass.setFocusable(true);
 		
 		
-		//로그인 버튼 구현
+		// 로그인 버튼 구현
 		JButton confirmBtn = new JButton("Log In");
 		confirmBtn.setFont(new Font("San Serif", Font.PLAIN, 15));
 		confirmBtn.setForeground(new Color(70,70,70));
 		
 		confirmBtn.addActionListener(new ActionListener() {
 			/**
-			 * 로그인 버튼을 누를 때 마다 DB 연결후 유저정보 확인
+			 * 로그인 버튼을 누를 때 마다 쿼리 전달하여 유저정보 확인
 			 * 일치하는 정보가 있을경우 정상적 로그인
 			 * 일치하는 정보가 없을경우 정보없음 텍스트 출력 
 			 */
@@ -75,13 +80,13 @@ public class login_win extends JFrame{
 					// 5.operate query -> admin 계정인지 체크
 					rs = stmt.executeQuery(sql1);
 					
-					// 6. print result of execution
+					// 6. print result of execution -> 관리자 계정으로 로그인 성공시 관리자 인터페이스로 전환
 					if(rs.isBeforeFirst()==true) {
 						while(rs.next()) {
 							String adminID = rs.getString(1);
 							String adminPASS = rs.getString(2);
 						
-							System.out.println(adminID + " - " + adminPASS);
+							System.out.println("Administrator access : " + adminID + " - " + adminPASS);
 							dispose();
 							
 							admin_interface ad_inter = new admin_interface(conn);
@@ -97,7 +102,7 @@ public class login_win extends JFrame{
 					if(rs.isBeforeFirst()==false) {
 						container.add(failMessage);
 						failMessage.setBounds(33, 200, 200, 20);
-					}else {//로그인 정보 일치
+					}else {//로그인 정보 일치시 -> 고객 인터페이스로 전환 
 						while(rs.next()) {
 							String Fname = rs.getString(1);
 							String Lname = rs.getString(2);
@@ -105,7 +110,7 @@ public class login_win extends JFrame{
 							System.out.println("Login successed : " +  Fname + " - " + Lname);
 							dispose();
 							
-							customer_interface cus_inter = new customer_interface(conn);
+							customer_interface cus_inter = new customer_interface(conn, input_id.getText());
 							cus_inter.setVisible(true);
 						}
 					}

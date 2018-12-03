@@ -74,7 +74,7 @@ public class Register_win extends JFrame{
 		regTitle.setForeground(Color.WHITE);
 		regTitle.setFont(new Font("SanSerif", Font.ITALIC, 20));
 		
-		container.add(regTitle);
+		container.add(regTitle); 
 		regTitle.setBounds(65, 20, 250, 30);
 		
 		//회원가입 0 - 아이디 입력

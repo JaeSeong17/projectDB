@@ -18,8 +18,8 @@ public class customer_interface extends JFrame implements ActionListener{
 	ResultSet rs;
 	String sql = null;
 
-	public customer_interface(Connection conn) {
-		
+	public customer_interface(Connection conn, String Cus_id) {
+
 		try {
 			stmt = conn.createStatement();
 		} catch (SQLException e1) {
@@ -121,7 +121,7 @@ public class customer_interface extends JFrame implements ActionListener{
 				
 					minor_panel[j] = new JPanel();
 					minor_category[i].addTab(minor_category_info[j], minor_panel[j]);
-					minor_panel[j].setPreferredSize(new Dimension(1000, 800));
+					minor_panel[j].setPreferredSize(new Dimension(800, 600));
 					
 					sql = "SELECT * FROM ITEM, CATEGORY WHERE CATEGORY.Product_number = ITEM.Product_number AND"
 							+ " CATEGORY.Minor_number = " + minor_category_number[j];
@@ -179,7 +179,8 @@ public class customer_interface extends JFrame implements ActionListener{
 		
 		//----------------------------------------------------------------
 		
-		selectPanel.addTab("USER_INFO", user_info);
+		AccountDataPane accDataPane = new AccountDataPane(conn, Cus_id);
+		selectPanel.addTab("USER_INFO", accDataPane.dataPanel[0]);
 		
 		user_info.setLayout(new GridLayout(4, 0));
 		JLabel Name_Label = new JLabel("Name : "/*쿼리로 불러온 lastname + firstname*/);
@@ -191,6 +192,9 @@ public class customer_interface extends JFrame implements ActionListener{
 		//address 나중에 예외처리 해주기
 		JLabel Phonenum_Label = new JLabel("Address : ");
 		JTextField Phonenum_modify = new JTextField(/*쿼리로 불러온 Phone_num정보*/); // Phonenum_Label 뒤에 붙
+		
+
+		
 		
 	}
 	
