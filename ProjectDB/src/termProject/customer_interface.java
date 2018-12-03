@@ -18,7 +18,7 @@ public class customer_interface extends JFrame implements ActionListener{
 	ResultSet rs;
 	String sql = null;
 	
-	String ID = "do1234";		//임시 테스트 아이
+	String ID = "do1234";		//임시 테스트 아이디
 
 	public customer_interface(Connection conn) {
 		
@@ -51,7 +51,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		
 		JLabel customer_id = new JLabel();	//현재 접속한 CUSTOMER의 ID표시
 		normal_info.add(customer_id);
-		customer_id.setText("Welcome " + "ID" + "!");
+		customer_id.setText("Welcome " + ID + "!");
 		date_info.setFont(new Font("Serif", Font.BOLD, 20));
 		
 		//기본탭 생성-----------------------------------------------------
@@ -160,7 +160,9 @@ public class customer_interface extends JFrame implements ActionListener{
 					
 					item_table[i][j] = new JTable(item_info[i][j], item_column);
 					//minor_panel[j].setLayout(new BorderLayout());
-					minor_panel[j].add(item_table[i][j]);
+					JScrollPane scroll = new JScrollPane(item_table[i][j]);
+					minor_panel[j].add(scroll);
+					//minor_panel[j].add(item_table[i][j]);
 					put_button[i][j] = new JButton("Put in Cart");
 					minor_panel[j].add(put_button[i][j]);
 					item_table[i][j].getColumn("Product").setPreferredWidth(150);
@@ -184,12 +186,13 @@ public class customer_interface extends JFrame implements ActionListener{
 		int[] personal_shoppingbag = new int[40];
 		String[] shoppingbag_column = {"Product", "Total Price", "Producer", "Origin", "Quantity"};
 		JTable shoppingbag_table = new JTable(shoppingbag_info, shoppingbag_column);
-		shoppingbag.add(shoppingbag_table);
+		JScrollPane scroll = new JScrollPane(shoppingbag_table);
+		shoppingbag.add(scroll);
 		shoppingbag_table.getColumn("Product").setPreferredWidth(150);
 		shoppingbag_table.getColumn("Total Price").setPreferredWidth(100);
 		shoppingbag_table.getColumn("Producer").setPreferredWidth(150);
 		shoppingbag_table.getColumn("Origin").setPreferredWidth(200);
-		shoppingbag_table.getColumn("Quantity").setPreferredWidth(30);
+		shoppingbag_table.getColumn("Quantity").setPreferredWidth(100);
 		
 		JPanel purchase_panel = new JPanel();
 		shoppingbag.add(purchase_panel);
