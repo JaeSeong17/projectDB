@@ -67,7 +67,8 @@ public class login_win extends JFrame{
 					// 4. write SQL query
 					String temp_id = input_id.getText(); //JTextField로부터 아이디입력값 전달
 					String temp_pass = input_pass.getText();//JTextField로부터 비밀번호 입력값 전달
-					String sql1 = "SELECT * FROM ADMIN";
+					String sql1 = "SELECT * FROM ADMIN WHERE ad_id = \'" + temp_id
+							+ "\' AND ad_pass = \'" + temp_pass +"\'";
 					String sql2 = "SELECT First_name, Last_name FROM CUSTOMER WHERE Cus_id = \'" + temp_id
 							+ "\' AND Cus_password = \'" + temp_pass + "\'";
 					

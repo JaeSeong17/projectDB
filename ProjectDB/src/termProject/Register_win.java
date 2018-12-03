@@ -185,18 +185,18 @@ public class Register_win extends JFrame{
 		arrDate[0] = "D";
 		int temp = 2018;
 		for(int i=0; i<100; i++) {
-			temp -= i;
 			arrYear[i+1] = String.valueOf(temp);
+			temp -= 1;
 		}
 		temp = 1;
 		for(int i=0; i<12; i++) {
-			temp += i;
 			arrMonth[i+1] = String.valueOf(temp);
+			temp += 1;
 		}
 		temp = 1;
 		for(int i=0; i<31; i++) {
-			temp += i;
 			arrDate[i+1] = String.valueOf(temp);
+			temp += 1;
 		}
 		yearComboBox = new JComboBox<String>(arrYear);
 		monthComboBox = new JComboBox<String>(arrMonth);
@@ -392,7 +392,7 @@ public class Register_win extends JFrame{
 		
 		public SubSuccessWin() {
 			super("Register Success");
-			setSize(400, 100);
+			setSize(350, 100);
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			Container con = this.getContentPane();
 			con.setBackground(Color.GRAY);
