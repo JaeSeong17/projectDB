@@ -17,6 +17,8 @@ public class customer_interface extends JFrame implements ActionListener{
 	Statement stmt = null;
 	ResultSet rs;
 	String sql = null;
+	
+	String ID = "do1234";		//임시 테스트 아이
 
 	public customer_interface(Connection conn) {
 		
@@ -70,7 +72,8 @@ public class customer_interface extends JFrame implements ActionListener{
 		JTabbedPane[] minor_category = new JTabbedPane[10];	//major_panel과 같은개수
 		JPanel[] minor_panel = new JPanel[10];			//여기에 제품정보 출력
 		JTable[][] item_table = new JTable[10][10];		//ITEM정보 들어갈 TABLE
-		String[][][][] item_info = new String[10][10][20][4];
+		JButton[][] put_button = new JButton[30][4];
+		String[][][][] item_info = new String[10][10][30][4];
 		String[] item_column = {"Product", "Price", "Producer", "Origin"};
 		
 		//동적으로 갯수, 이름 맞춰서 반복문 통해서 정보 집어넣음(3중 반복문)
@@ -156,11 +159,13 @@ public class customer_interface extends JFrame implements ActionListener{
 					}
 					
 					item_table[i][j] = new JTable(item_info[i][j], item_column);
-					minor_panel[j].setLayout(new BorderLayout());
-					minor_panel[j].add(item_table[i][j], BorderLayout.CENTER);
+					//minor_panel[j].setLayout(new BorderLayout());
+					minor_panel[j].add(item_table[i][j]);
+					put_button[i][j] = new JButton("Put in Cart");
+					minor_panel[j].add(put_button[i][j]);
 					item_table[i][j].getColumn("Product").setPreferredWidth(150);
 					item_table[i][j].getColumn("Price").setPreferredWidth(100);
-					item_table[i][j].getColumn("Producer").setPreferredWidth(200);
+					item_table[i][j].getColumn("Producer").setPreferredWidth(150);
 					item_table[i][j].getColumn("Origin").setPreferredWidth(200);
 					
 				}
@@ -168,14 +173,82 @@ public class customer_interface extends JFrame implements ActionListener{
 			}
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		//----------------------------------------------------------------
 		
 		selectPanel.addTab("SHOPPINTBAG", shoppingbag);
-		//SHOPPINGBAG탭 디자인
+		
+		String[][] shoppingbag_info = new String[40][5];
+		int[] personal_shoppingbag = new int[40];
+		String[] shoppingbag_column = {"Product", "Total Price", "Producer", "Origin", "Quantity"};
+		JTable shoppingbag_table = new JTable(shoppingbag_info, shoppingbag_column);
+		shoppingbag.add(shoppingbag_table);
+		shoppingbag_table.getColumn("Product").setPreferredWidth(150);
+		shoppingbag_table.getColumn("Total Price").setPreferredWidth(100);
+		shoppingbag_table.getColumn("Producer").setPreferredWidth(150);
+		shoppingbag_table.getColumn("Origin").setPreferredWidth(200);
+		shoppingbag_table.getColumn("Quantity").setPreferredWidth(30);
+		
+		JPanel purchase_panel = new JPanel();
+		shoppingbag.add(purchase_panel);
+		purchase_panel.setLayout(new GridLayout(2, 0));
+		int total_price = 0;
+		String price = "Total Price : " + total_price;
+		
+		try {
+			
+			sql = "SELECT Product_number, Add_num  FROM SHOPPINGBAG S WHERE Cus_id = \'" + ID + "\'";
+			rs = stmt.executeQuery(sql);
+			
+			int i=0;
+			
+			while(rs.next()) {
+				
+				personal_shoppingbag[i] = rs.getInt(1);
+				shoppingbag_info[i][4] = rs.getString(2);
+				
+				i++;
+				
+			}
+			
+			for(int j=0;j<i;j++) {
+				
+			sql = "SELECT * FROM ITEM S WHERE Product_number = " + personal_shoppingbag[j];
+			rs = stmt.executeQuery(sql);
+			
+				while(rs.next()) {
+					
+					shoppingbag_info[j][0] = rs.getString(2);
+					total_price += Integer.parseInt(rs.getString(6)) * Integer.parseInt(shoppingbag_info[j][4]);
+					shoppingbag_info[j][1] = Integer.toString(Integer.parseInt(rs.getString(6)) * Integer.parseInt(shoppingbag_info[j][4]));
+					shoppingbag_info[j][2] = rs.getString(7);
+				
+				}
+
+				sql = "SELECT * FROM PRODUCERLOCATION P WHERE P.Pl_num = " + shoppingbag_info[j][2];
+			
+				rs = stmt.executeQuery(sql);
+			
+				while(rs.next()) {
+				
+					shoppingbag_info[j][2] = rs.getString(2);
+					shoppingbag_info[j][3] = rs.getString(3);
+				
+				}
+			
+			}
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		JLabel price_panel  = new JLabel("Total Price : " + total_price);
+		purchase_panel.add(price_panel);
+		JButton purchase_button = new JButton("Purchase");
+		purchase_panel.add(purchase_button);
 		
 		//----------------------------------------------------------------
 		
