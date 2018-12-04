@@ -49,7 +49,7 @@ public class customer_interface extends JFrame implements ActionListener{
 			e1.printStackTrace();
 		}
 		
-		setSize(1000, 800);
+		setSize(1200, 800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		setLayout(new BorderLayout());	//전체 레이아웃 설정
@@ -161,6 +161,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		JTable shoppingbag_table = new JTable(shoppingbag_info, shoppingbag_column);
 		JScrollPane scroll = new JScrollPane(shoppingbag_table);
 		shoppingbag.add(scroll);
+		scroll.setPreferredSize(new Dimension(800, 650));
 		shoppingbag_table.getColumn("Product").setPreferredWidth(150);
 		shoppingbag_table.getColumn("Total Price").setPreferredWidth(100);
 		shoppingbag_table.getColumn("Producer").setPreferredWidth(150);

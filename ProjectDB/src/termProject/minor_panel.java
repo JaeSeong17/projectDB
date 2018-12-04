@@ -75,6 +75,7 @@ public class minor_panel extends JPanel implements ActionListener{
 			//minor_panel[j].setLayout(new BorderLayout());
 			JScrollPane scroll = new JScrollPane(item_table);
 			add(scroll);
+			scroll.setPreferredSize(new Dimension(700, 550));
 			quantitycombobox = new JComboBox<String>(quantityary);	
 			add(quantitycombobox);
 			put_button = new JButton("Put in Cart");
