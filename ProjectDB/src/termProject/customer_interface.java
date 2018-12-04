@@ -14,6 +14,7 @@ public class customer_interface extends JFrame implements ActionListener{
 	
 	private Calendar today = Calendar.getInstance();
 	
+	Connection con;
 	Statement stmt = null;
 	ResultSet rs;
 	String sql = null;
@@ -36,7 +37,7 @@ public class customer_interface extends JFrame implements ActionListener{
 	JTabbedPane[] minor_category = new JTabbedPane[10];	//major_panel과 같은개수
 	minor_panel[] minor_panel = new minor_panel[10];		//여기에 제품정보 출력
 	
-	AccountDataPane accDataPane;
+	JDialog buying_decision = new JDialog();
 
 	public customer_interface(Connection conn, String Cus_id) {
 		
@@ -44,12 +45,13 @@ public class customer_interface extends JFrame implements ActionListener{
 
 		try {
 			stmt = conn.createStatement();
+			con = conn;
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
-		setSize(1000, 600);
+		setSize(1200, 800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		setLayout(new BorderLayout());	//전체 레이아웃 설정
@@ -107,7 +109,7 @@ public class customer_interface extends JFrame implements ActionListener{
 			 	minor_category[i] = new JTabbedPane();
 				major_category.addTab(major_category_info[i], major_panel[i]);
 				major_panel[i].add(minor_category[i]);
-				major_panel[i].setPreferredSize(new Dimension(950, 430));
+				major_panel[i].setPreferredSize(new Dimension(800, 600));
 				
 				sql = "SELECT Minor_tag, Minor_number FROM MINOR_CATEGORY WHERE Major_number = " + major_category_number[i];
 				
@@ -130,7 +132,7 @@ public class customer_interface extends JFrame implements ActionListener{
 					minor_panel[j] = new minor_panel(conn, Cus_id, minor_category_number[j]);
 					
 					minor_category[i].addTab(minor_category_info[j], minor_panel[j]);
-					minor_panel[j].setPreferredSize(new Dimension(800, 400));
+					minor_panel[j].setPreferredSize(new Dimension(800, 600));
 					
 				}
 
@@ -147,14 +149,12 @@ public class customer_interface extends JFrame implements ActionListener{
 			
 		//----------------------------------------------------------------
 		
-		accDataPane = new AccountDataPane(conn, Cus_id);
+		AccountDataPane accDataPane = new AccountDataPane(conn, Cus_id);
 		selectPanel.addTab("USER_INFO", accDataPane.mainAccPanel);
 	
 	}
 	
 	public void shoppingbag_refresh(JPanel shoppingbag, String Cus_id) {
-		
-		System.out.println("Refresh complete");
 		
 		String[][] shoppingbag_info = new String[40][5];
 		
@@ -163,6 +163,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		JTable shoppingbag_table = new JTable(shoppingbag_info, shoppingbag_column);
 		JScrollPane scroll = new JScrollPane(shoppingbag_table);
 		shoppingbag.add(scroll);
+		scroll.setPreferredSize(new Dimension(800, 650));
 		shoppingbag_table.getColumn("Product").setPreferredWidth(150);
 		shoppingbag_table.getColumn("Total Price").setPreferredWidth(100);
 		shoppingbag_table.getColumn("Producer").setPreferredWidth(150);
@@ -171,7 +172,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		
 		JPanel purchase_panel = new JPanel();
 		shoppingbag.add(purchase_panel);
-		purchase_panel.setLayout(new GridLayout(2, 0));
+		purchase_panel.setLayout(new GridLayout(3, 0));
 		int total_price = 0;
 		
 		try {
@@ -222,13 +223,22 @@ public class customer_interface extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 		
+		JLabel price_panel = new JLabel("Total Price : " + total_price);
+		purchase_panel.add(price_panel);
+		JButton purchase_button = new JButton("Purchase");
+		purchase_button.addActionListener(this);
+		purchase_panel.add(purchase_button);
 		JButton refresh_button = new JButton("Refresh");
 		refresh_button.addActionListener(this);
 		purchase_panel.add(refresh_button);
-		JLabel price_panel  = new JLabel("Total Price : " + total_price);
-		purchase_panel.add(price_panel);
-		JButton purchase_button = new JButton("Purchase");
-		purchase_panel.add(purchase_button);
+		
+		JLabel total_price_panel = new JLabel("Total Price : " + total_price);
+		buying_decision.setSize(300,150);
+		buying_decision.setLayout(new GridLayout(2, 0));
+		buying_decision.add(total_price_panel);
+		JButton decision_button = new JButton("Decision");
+		decision_button.addActionListener(this);
+		buying_decision.add(decision_button);
 		
 	}
 	
@@ -239,13 +249,115 @@ public class customer_interface extends JFrame implements ActionListener{
 		
 		if(actionCmd.equals("Purchase")) {
 			
-			System.out.println("Purchase");
+			buying_decision.setVisible(true);
 			
 		}
 		
-		if(actionCmd.equals("Refresh")) {
+		else if(actionCmd.equals("Decision")) {
 			
-			System.out.println("Refresh");
+			try {
+				
+				con.setAutoCommit(false);
+				
+				String date = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DATE);
+				
+				sql = "SELECT count(*) FROM SHOPPINGBAG WHERE Cus_id = \'" + ID + "\'";
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				int num_of_update = rs.getInt(1);
+				
+				sql = "SELECT MAX(Order_num) FROM ORDERED";
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				int order_num = rs.getInt(1) + 1;
+				
+				sql = "SELECT Address FROM CUSTOMER WHERE Cus_id = \'" + ID + "\'";
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				String address = rs.getString(1);
+				
+				sql = "SELECT Office_num FROM RETAILER WHERE Address = \'" + address + "\'";
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				int address_num = rs.getInt(1);
+				
+				sql = "INSERT INTO ORDERED VALUES (" + order_num + ", \'" + ID + "\', " + address_num + ", \'" + date + "\')";
+				System.out.println(sql);
+				int update = stmt.executeUpdate(sql);
+				
+				sql = "SELECT Product_number, Add_num FROM SHOPPINGBAG WHERE Cus_id = \'" + ID + "\'";
+				rs = stmt.executeQuery(sql);
+				int[][] shoppingbag_list = new int[40][2];
+				int i=0;
+				
+				while(rs.next()) {
+					
+					shoppingbag_list[i][0] = rs.getInt(1);
+					shoppingbag_list[i][1] = rs.getInt(2);
+					i++;
+					
+				}
+				
+				for(int j=0;j<num_of_update;j++) {
+					
+					int quantity = 0;
+			
+					sql = "INSERT INTO ORDERED_PRODUCT VALUES (" + order_num + ", " + shoppingbag_list[j][0] + ", " + shoppingbag_list[j][1] + ")";
+					System.out.println(sql);
+					update = stmt.executeUpdate(sql);
+					
+					sql = "DELETE FROM SHOPPINGBAG WHERE Cus_id = \'" + ID + "\' AND Product_number = " + shoppingbag_list[j][0] + " AND Add_num = " + shoppingbag_list[j][1];
+					System.out.println(sql);
+					update = stmt.executeUpdate(sql);
+					
+					sql = "SELECT Stock FROM STOCK_DATA WHERE Office_num = " + address_num + " AND Product_number = " + shoppingbag_list[j][0];
+					rs = stmt.executeQuery(sql);
+					
+					rs.next();
+					quantity = rs.getInt(1);
+					
+					if ((quantity-shoppingbag_list[j][1]) < 0) {
+						
+						System.out.println("There is not enough stock");
+						
+						sql = "SELECT Product_name FROM ITEM WHERE Product_number = " + shoppingbag_list[j][0];
+						rs = stmt.executeQuery(sql);
+						rs.next();
+						JOptionPane.showMessageDialog(null, "There is not enough stock(" + rs.getString(1) + ")");
+						
+						con.rollback();
+						return;
+						
+					}
+					
+					sql = "UPDATE STOCK_DATA SET Stock = " + (quantity-shoppingbag_list[j][1]) + " WHERE Product_number = " + shoppingbag_list[j][0] + " AND Stock = " + shoppingbag_list[j][1];
+				
+				}
+				
+				con.commit();
+				
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			
+			
+			shoppingbag = new JPanel();
+			shoppingbag_refresh(shoppingbag, ID);
+			
+			selectPanel.removeTabAt(1);
+			selectPanel.add( shoppingbag, "SHOPPINTBAG", 1);
+			
+			buying_decision.dispose();
+			
+		}
+		
+		else if(actionCmd.equals("Refresh")) {
 			
 			shoppingbag = new JPanel();
 			shoppingbag_refresh(shoppingbag, ID);
