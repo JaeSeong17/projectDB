@@ -52,7 +52,7 @@ public class minor_panel extends JPanel implements ActionListener{
 				item_info[num_of_item][1] = rs.getString(6);
 				item_info[num_of_item][2] = rs.getString(7);
 
-				num_of_item++;	
+				num_of_item++;
 			
 			}
 		
@@ -75,11 +75,15 @@ public class minor_panel extends JPanel implements ActionListener{
 			//minor_panel[j].setLayout(new BorderLayout());
 			JScrollPane scroll = new JScrollPane(item_table);
 			add(scroll);
+			scroll.setPreferredSize(new Dimension(600, 550));
+			JPanel Cart = new JPanel();
+			Cart.setLayout(new GridLayout(2, 0));
+			add(Cart, BorderLayout.EAST);
 			quantitycombobox = new JComboBox<String>(quantityary);	
-			add(quantitycombobox);
+			Cart.add(quantitycombobox);
 			put_button = new JButton("Put in Cart");
 			put_button.addActionListener(this);
-			add(put_button);
+			Cart.add(put_button);
 			item_table.getColumn("Product").setPreferredWidth(150);
 			item_table.getColumn("Price").setPreferredWidth(100);
 			item_table.getColumn("Producer").setPreferredWidth(150);
