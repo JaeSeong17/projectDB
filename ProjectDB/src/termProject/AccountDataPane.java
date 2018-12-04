@@ -244,8 +244,6 @@ public class AccountDataPane extends JFrame{
 		
 		Statement stmt = null;
 		ResultSet rs = null;
-
-		private String[] latestDatas;
 		
 		public subFinalCheckWin(Connection conn, String Cus_id, String[] changeData) {
 			
@@ -272,8 +270,6 @@ public class AccountDataPane extends JFrame{
 			strPane.add(finalCheckStr[1]);
 			
 			subcon.add(strPane);
-			
-			latestDatas = null;
 			
 			// 버튼 패널 구현부
 			// 확인 버튼 구현부
@@ -354,7 +350,7 @@ public class AccountDataPane extends JFrame{
 						
 						
 					}catch(SQLException ex) {
-						System.out.println("UPDATE Error : " + ex);
+						System.out.println("Query. UPDATE Error : " + ex);
 					}
 					
 					try {
