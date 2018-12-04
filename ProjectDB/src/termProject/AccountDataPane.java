@@ -27,7 +27,30 @@ public class AccountDataPane extends JFrame{
 	private JLabel[] accountTag = new JLabel[9];	// 개인정보 표시부 각 데이터 태그 설정
 	private JLabel[] accountData = new JLabel[9];
 	protected JLabel immutableIDData;					// 수정패널 - 해당 ID 표시 (수정 불가능)
-	protected JTextField[] mutableData = new HintTextField[8];	// 수정패널 - 각 태그에 해당되는 수정가능한 개인정보 표시 (직접입력 수정)
+	protected JTextField[] mutableData = new JTextField[8];	// 수정패널 - 각 태그에 해당되는 수정가능한 개인정보 표시 (직접입력 수정)
+	protected JTextField[] mutablePhoneData = new JTextField[3]; // 수정패널 -핸드폰 번호
+	private JPanel phonePanel;
+	private JPanel birthPanel;
+	
+	//지역 선택상자 선언
+	private String selectAddress[] = {"Seoul", "Busan", "Ulsan", "Daejeon",
+				"Daegu", "Inchen", "Gwangju", "Jeollabuk-do", "Chungcheongbuk-do",
+				"Jeju-do", "Chungcheongnam-do", "Gyeonsangbuk-do", "Gyeonsangnam-do",
+				"Gangwon-do", "Gyeonggi-do", "Jeollabuk-do", "Jeollanam-do"
+	};
+	private JComboBox<String> addComboBox;
+	
+	//성별 선택상자 선언
+	private String selectSex[] = {"Select", "M", "W"};
+	private JComboBox<String> sexComboBox;
+	
+	//생년월일 선택상자 선언
+	private String[] arrYear = new String[101];
+	private String[] arrMonth = new String[13];
+	private String[] arrDate = new String[32];
+	private JComboBox<String> yearComboBox;
+	private JComboBox<String> monthComboBox;
+	private JComboBox<String> dateComboBox;
 	
 	private String[] dataArr = new String[9];	// DB로부터 해당 회원정보를 받아와서 저장할 문자열 배열
 	
@@ -46,6 +69,10 @@ public class AccountDataPane extends JFrame{
 			dataPanel[i] = new JPanel();
 			dataPanel[i].setBackground(Color.GRAY);
 		}
+		phonePanel = new JPanel();
+		phonePanel.setBackground(Color.GRAY);
+		birthPanel = new JPanel();
+		birthPanel.setBackground(Color.GRAY);
 		// 개인정보 화면의 전체 패널
 		// 좌 - 회원정보조회 및 수정
 		// 우 - 주문기록 조회 
@@ -70,6 +97,9 @@ public class AccountDataPane extends JFrame{
 		dataPanel[5].setLayout(new FlowLayout()); // 하부 버튼 패널 - 1
 		dataPanel[6].setLayout(new FlowLayout()); // 하부 버튼 패널 - 2
 		
+		phonePanel.setLayout(new GridLayout(1,3,5,5));
+		birthPanel.setLayout(new GridLayout(1,3));
+		
 		
 		// DB로부터 개인정보를 받아와 문자열 배열에 저장
 		try {
@@ -93,10 +123,10 @@ public class AccountDataPane extends JFrame{
 		dataPanel[0].add(subTitle[0], BorderLayout.NORTH);
 		
 		// 각 정보에 달릴 태그 설정 
-		accountTag[0] = new JLabel("  User ID  ");
-		accountTag[1] = new JLabel("  Password  ");
-		accountTag[2] = new JLabel("  Address  ");
-		accountTag[3] = new JLabel("  Phone number  ");
+		accountTag[0] = new JLabel("  User ID * ");
+		accountTag[1] = new JLabel("  Password * ");
+		accountTag[2] = new JLabel("  Address * ");
+		accountTag[3] = new JLabel("  Phone number * ");
 		accountTag[4] = new JLabel("  First name  ");
 		accountTag[5] = new JLabel("  Last name  ");
 		accountTag[6] = new JLabel("  Sex  ");
@@ -120,9 +150,50 @@ public class AccountDataPane extends JFrame{
 		immutableIDData.setForeground(Color.WHITE);
 		immutableIDData.setFont(new Font("San Serif", Font.PLAIN, 15));
 		for(int i=0; i<mutableData.length; i++) {
-			mutableData[i] = new HintTextField(dataArr[i+1]);
-			mutableData[i].setFont(new Font("San Serif", Font.PLAIN, 15));
-			mutableData[i] = new HintTextField(dataArr[i+1]);
+			if(i==1) {
+				addComboBox = new JComboBox<String>(selectAddress);
+				addComboBox.setSelectedItem(dataArr[i+1]);
+			}else if(i==2) {
+				mutablePhoneData[0] = new JTextField(dataArr[i+1].substring(0, 3));
+				mutablePhoneData[0].setFont(new Font("San Serif", Font.PLAIN, 15));
+				mutablePhoneData[1] = new JTextField(dataArr[i+1].substring(4, 8));
+				mutablePhoneData[1].setFont(new Font("San Serif", Font.PLAIN, 15));
+				mutablePhoneData[2] = new JTextField(dataArr[i+1].substring(9, 13));
+				mutablePhoneData[2].setFont(new Font("San Serif", Font.PLAIN, 15));
+			}else if(i==5){
+				sexComboBox = new JComboBox<String>(selectSex);
+				sexComboBox.setSelectedItem(dataArr[i+1]);
+			}else if(i==6){
+				int temp = 2018;
+				for(int j=0; j<100; j++) {
+					arrYear[j+1] = String.valueOf(temp);
+					temp -= 1;
+				}
+				temp = 1;
+				for(int j=0; j<12; j++) {
+					arrMonth[j+1] = String.valueOf(temp);
+					temp += 1;
+				}
+				temp = 1;
+				for(int j=0; j<31; j++) {
+					arrDate[j+1] = String.valueOf(temp);
+					temp += 1;
+				}
+				yearComboBox = new JComboBox<String>(arrYear);
+				yearComboBox.setSelectedItem(dataArr[i+1].substring(0, 4));
+				monthComboBox = new JComboBox<String>(arrMonth);
+				if(Integer.parseInt(dataArr[i+1].substring(5,7))/10<1) {
+					monthComboBox.setSelectedItem(dataArr[i+1].substring(6, 7));
+				}else {
+					monthComboBox.setSelectedItem(dataArr[i+1].substring(5, 7));
+				}
+				dateComboBox = new JComboBox<String>(arrDate);
+				dateComboBox.setSelectedItem(dataArr[i+1].substring(8, 10));
+				
+			}else {
+				mutableData[i] = new JTextField(dataArr[i+1]);
+				mutableData[i].setFont(new Font("San Serif", Font.PLAIN, 15));
+			}
 		}
 				
 		// 패널에 글상자 붙이기
@@ -134,7 +205,23 @@ public class AccountDataPane extends JFrame{
 		}
 		dataPanel[4].add(immutableIDData);// 데이터 우-2 패널에 붙이기
 		for(int i=0; i<mutableData.length; i++) { 
-			dataPanel[4].add(mutableData[i]);
+			if(i==1) {
+				dataPanel[4].add(addComboBox);
+			}else if(i==2){
+				phonePanel.add(mutablePhoneData[0]);
+				phonePanel.add(mutablePhoneData[1]);
+				phonePanel.add(mutablePhoneData[2]);
+				dataPanel[4].add(phonePanel);
+			}else if(i==5){
+				dataPanel[4].add(sexComboBox);
+			}else if(i==6){
+				birthPanel.add(yearComboBox);
+				birthPanel.add(monthComboBox);
+				birthPanel.add(dateComboBox);
+				dataPanel[4].add(birthPanel);
+			}else {
+				dataPanel[4].add(mutableData[i]);
+			}
 		}
 		dataPanel[1].add(dataPanel[2]);
 		dataPanel[1].add(dataPanel[3]);
@@ -167,14 +254,58 @@ public class AccountDataPane extends JFrame{
 		changeBtn[1].addActionListener(new ActionListener() {
 
 			private String [] temps = new String[mutableData.length];
+			private Boolean check = true;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				for(int i=0;i<mutableData.length;i++) {
-					temps[i] = mutableData[i].getText();
+					if(i==0) {
+						if(mutableData[i].getText().equals("")) {
+							System.out.println(i + " field blank");
+							check = false;
+							break;
+						}else {
+							temps[i] = mutableData[i].getText();
+						}
+					}else if(i==1) {
+						temps[i] = addComboBox.getSelectedItem().toString();
+					}else if(i==2) {
+						if(mutablePhoneData[0].getText().equals("")||mutablePhoneData[1].getText().equals("")||mutablePhoneData[2].getText().equals("")){
+							System.out.println(i + " field blank");
+							check = false;
+							break;
+						}else {
+							temps[i] = mutablePhoneData[0].getText() + "-" + mutablePhoneData[1].getText() + "-" + mutablePhoneData[2].getText();
+						}
+					}else if(i==5) {
+						if(sexComboBox.getSelectedItem().toString().equals("Select")) {
+							temps[i] = "";
+						}else {
+							temps[i] = sexComboBox.getSelectedItem().toString();
+						}
+					}else if(i==6) {
+						if(yearComboBox.getSelectedItem()==null||monthComboBox.getSelectedItem()==null||dateComboBox.getSelectedItem()==null) {
+							temps[i] = "";
+						}else {
+							temps[i] = yearComboBox.getSelectedItem().toString() + "-"
+								+ monthComboBox.getSelectedItem().toString() + "-"
+								+ dateComboBox.getSelectedItem().toString();
+						}
+					}else {
+						temps[i] = mutableData[i].getText();
+					}
+					
+					System.out.println(i + " : " + temps[i]);
 				}
-				subFinalCheckWin subCheck = new subFinalCheckWin(conn, Cus_id, temps);
-				subCheck.setVisible(true);
+				
+				if(check) {
+					subFinalCheckWin subCheck = new subFinalCheckWin(conn, Cus_id, temps);
+					subCheck.setVisible(true);
+				}else {
+					subWarnWin subWarn = new subWarnWin();
+					subWarn.setVisible(true);
+					check=true;
+				}
 			}
 			
 		});
@@ -295,6 +426,7 @@ public class AccountDataPane extends JFrame{
 							sql = sql +"Cus_password = \'" + changeData[0] +"\' ";
 							check = true;
 						}
+						
 						if(!changeData[1].equals("")) {
 							if(check) {
 								sql = sql +", ";
@@ -302,6 +434,7 @@ public class AccountDataPane extends JFrame{
 							sql = sql +"Address =\'" + changeData[1] + "\' ";
 							check = true;
 						}
+						
 						if(!changeData[2].equals("")) {
 							if(check) {
 								sql = sql +", ";
@@ -309,40 +442,75 @@ public class AccountDataPane extends JFrame{
 							sql = sql +"Phone_num =\'" + changeData[2] + "\' ";
 							check = true;
 						}
+						
 						if(!changeData[3].equals("")) {
 							if(check) {
 								sql = sql +", ";
 							}
 							sql = sql +"First_name =\'" + changeData[3] + "\' ";
 							check = true;
+						}else {
+							if(check) {
+								sql = sql +", ";
+							}
+							sql = sql +"First_name = null ";
+							check = true;
 						}
+						
 						if(!changeData[4].equals("")) {
 							if(check) {
 								sql = sql +", ";
 							}
 							sql = sql +"Last_name =\'" + changeData[4] + "\' ";
 							check = true;
+						}else {
+							if(check) {
+								sql = sql +", ";
+							}
+							sql = sql +"Last_name = null ";
+							check = true;
 						}
+						
 						if(!changeData[5].equals("")) {
 							if(check) {
 								sql = sql +", ";
 							}
 							sql = sql +"Sex =\'" + changeData[5] + "\' ";
 							check = true;
+						}else {
+							if(check) {
+								sql = sql +", ";
+							}
+							sql = sql +"Sex = null ";
+							check = true;
 						}
+						
 						if(!changeData[6].equals("")) {
 							if(check) {
 								sql = sql +", ";
 							}
 							sql = sql +"Birthdate =\'" + changeData[6] + "\' ";
 							check = true;
+						}else {
+							if(check) {
+								sql = sql +", ";
+							}
+							sql = sql +"Birthdate = null ";
+							check = true;
 						}
+						
 						if(!changeData[7].equals("")) {
 							if(check) {
 								sql = sql +", ";
 							}
 							sql = sql +"Job =\'" + changeData[7] + "\' ";
+						}else {
+							if(check) {
+								sql = sql +", ";
+							}
+							sql = sql +"Job = null ";
 						}
+						
 						sql = sql +"WHERE Cus_id = \'" + Cus_id + "\'";
 						
 						int count = stmt.executeUpdate(sql);
@@ -353,7 +521,7 @@ public class AccountDataPane extends JFrame{
 						System.out.println("Query. UPDATE Error : " + ex);
 					}
 					
-					try {
+					try {//수정된 정보로 회원정보조회 화면 갱신
 						stmt = conn.createStatement();
 						
 						String sql = "Select * FROM CUSTOMER "
@@ -362,9 +530,16 @@ public class AccountDataPane extends JFrame{
 						rs = stmt.executeQuery(sql);
 						
 						while(rs.next()) {
+							dataPanel[3].removeAll();
+							dataPanel[3].add(accountData[0]);
 							for(int i=1; i<accountData.length;i++) {
 								accountData[i] = new JLabel(rs.getString(i+1));
+								accountData[i].setForeground(Color.WHITE);
+								accountData[i].setFont(new Font("San serif", Font.PLAIN, 15));
+								dataPanel[3].add(accountData[i]);
 							}
+							dataPanel[3].revalidate();
+							dataPanel[3].repaint();
 						}
 					}catch(SQLException ex) {
 						System.out.println("SELECT Error : " + ex);
@@ -400,6 +575,56 @@ public class AccountDataPane extends JFrame{
 			});
 			btnPane.add(finalCheckBtn[1]);
 			subcon.add(btnPane, BorderLayout.SOUTH);
+			
+			
+		}
+	}
+	
+	public class subWarnWin extends JFrame{
+		/**
+		 * 필수 입력칸이 공백일 경우에 출력되는 경고창
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		private JPanel warnPanel;
+		private JPanel warnBtnPanel;
+		private JLabel[] warnStr = new JLabel[2];
+		private JButton warnBtn;
+		public subWarnWin() {
+			super("Warning Window");
+			setSize(300, 120);
+			Container subcon = this.getContentPane();
+			subcon.setBackground(Color.GRAY);
+			subcon.setLayout(new BorderLayout());
+			
+			warnPanel = new JPanel();
+			warnPanel.setLayout(new BoxLayout(warnPanel, BoxLayout.Y_AXIS));
+			warnBtnPanel = new JPanel();
+			warnBtnPanel.setLayout(new FlowLayout());
+			
+			warnStr[0] = new JLabel("You must fill in");
+			warnStr[1] = new JLabel("the Required Field");
+			warnStr[0].setFont(new Font("San Serif", Font.PLAIN, 20));
+			warnStr[1].setFont(new Font("San Serif", Font.PLAIN, 20));
+			warnStr[0].setAlignmentX(Component.CENTER_ALIGNMENT);
+			warnStr[1].setAlignmentX(Component.CENTER_ALIGNMENT);
+			
+			warnPanel.add(warnStr[0]);
+			warnPanel.add(warnStr[1]);
+			subcon.add(warnPanel, BorderLayout.CENTER);
+			
+			warnBtn = new JButton("OK");
+			warnBtn.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					dispose();
+				}
+				
+			});
+			warnBtnPanel.add(warnBtn);
+			subcon.add(warnBtnPanel, BorderLayout.SOUTH);
 			
 			
 		}
