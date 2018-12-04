@@ -14,6 +14,7 @@ public class customer_interface extends JFrame implements ActionListener{
 	
 	private Calendar today = Calendar.getInstance();
 	
+	Connection con;
 	Statement stmt = null;
 	ResultSet rs;
 	String sql = null;
@@ -44,6 +45,7 @@ public class customer_interface extends JFrame implements ActionListener{
 
 		try {
 			stmt = conn.createStatement();
+			con = conn;
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -255,6 +257,8 @@ public class customer_interface extends JFrame implements ActionListener{
 			
 			try {
 				
+				con.setAutoCommit(false);
+				
 				String date = today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DATE);
 				
 				sql = "SELECT count(*) FROM SHOPPINGBAG WHERE Cus_id = \'" + ID + "\'";
@@ -299,6 +303,8 @@ public class customer_interface extends JFrame implements ActionListener{
 				}
 				
 				for(int j=0;j<num_of_update;j++) {
+					
+					int quantity = 0;
 			
 					sql = "INSERT INTO ORDERED_PRODUCT VALUES (" + order_num + ", " + shoppingbag_list[j][0] + ", " + shoppingbag_list[j][1] + ")";
 					System.out.println(sql);
@@ -307,13 +313,39 @@ public class customer_interface extends JFrame implements ActionListener{
 					sql = "DELETE FROM SHOPPINGBAG WHERE Cus_id = \'" + ID + "\' AND Product_number = " + shoppingbag_list[j][0] + " AND Add_num = " + shoppingbag_list[j][1];
 					System.out.println(sql);
 					update = stmt.executeUpdate(sql);
+					
+					sql = "SELECT Stock FROM STOCK_DATA WHERE Office_num = " + address_num + " AND Product_number = " + shoppingbag_list[j][0];
+					rs = stmt.executeQuery(sql);
+					
+					rs.next();
+					quantity = rs.getInt(1);
+					
+					if ((quantity-shoppingbag_list[j][1]) < 0) {
+						
+						System.out.println("There is not enough stock");
+						
+						sql = "SELECT Product_name FROM ITEM WHERE Product_number = " + shoppingbag_list[j][0];
+						rs = stmt.executeQuery(sql);
+						rs.next();
+						JOptionPane.showMessageDialog(null, "There is not enough stock(" + rs.getString(1) + ")");
+						
+						con.rollback();
+						return;
+						
+					}
+					
+					sql = "UPDATE STOCK_DATA SET Stock = " + (quantity-shoppingbag_list[j][1]) + " WHERE Product_number = " + shoppingbag_list[j][0] + " AND Stock = " + shoppingbag_list[j][1];
 				
 				}
+				
+				con.commit();
 				
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			
+			
 			
 			shoppingbag = new JPanel();
 			shoppingbag_refresh(shoppingbag, ID);

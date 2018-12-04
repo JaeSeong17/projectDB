@@ -9,19 +9,11 @@ import java.sql.*;
 import javax.swing.*;
 import java.util.Calendar;
 
-//admin 계정으로 로그인시 띄우는 화면
-public class admin_interface extends JFrame implements ActionListener{
-	
-	private Calendar today = Calendar.getInstance();
+public class Sorting_table_panel extends JPanel implements ActionListener{
 	
 	Statement stmt = null;
 	ResultSet rs;
 	String sql = null;
-	String ID = null;
-	
-	JTabbedPane selectPanel = new JTabbedPane();
-	
-	JPanel stock_panel = new JPanel();
 	
 	String[][] stock = new String[100][5];
 	String[] item_column = {"Product number", "Product name", "Importer", "Price", "PL num"};
@@ -30,9 +22,7 @@ public class admin_interface extends JFrame implements ActionListener{
 	JComboBox<String> quantitycombobox = new JComboBox();
 	String[] quantityary = new String[99];
 	
-	JPanel sales_panel = new JPanel();
-	
-	public admin_interface(Connection conn) {
+	public Sorting_table_panel(Connection conn) {
 		
 		try {
 			stmt = conn.createStatement();
@@ -41,15 +31,7 @@ public class admin_interface extends JFrame implements ActionListener{
 			e1.printStackTrace();
 		}
 		
-		setSize(1400, 800);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(new BorderLayout());
-		
-		//재고증가, 재고 모자란 아이템 리스트, 매출확인
-		
-		add(selectPanel);
-		selectPanel.addTab("STOCK", stock_panel);
-		stock_panel.add(scroll);
+		add(scroll);
 		scroll.setPreferredSize(new Dimension(1200, 700));
 		stock_table.getColumn("Product number").setPreferredWidth(100);
 		stock_table.getColumn("Product name").setPreferredWidth(100);
@@ -81,8 +63,10 @@ public class admin_interface extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 		
+		//table_sort(stock, i);
+		
 		JPanel extra_panel  = new JPanel();		//매출, 그외 버튼이 들어갈 패널
-		stock_panel.add(extra_panel, BorderLayout.EAST);
+		add(extra_panel, BorderLayout.EAST);
 		extra_panel.setLayout(new GridLayout(2, 0));		//매출패널, 주문버튼 분
 		
 		for(i=1;i<100;i++)
@@ -95,24 +79,30 @@ public class admin_interface extends JFrame implements ActionListener{
 		order_button.addActionListener(this);
 		extra_panel.add(order_button);
 		
-		//-----------------------------------------------------------------------
-		
-		selectPanel.addTab("SALES", sales_panel);
-		
 	}
 	
-	
+//	void table_sort(String[][] table, int size) {
+//		
+//	        int min; //최소값을 가진 데이터의 인덱스 저장 변수
+//	        String[] temp = new String[5];
+//	        
+//	        for(int i=0; i<size-1; i++){ // size-1 : 마지막 요소는 자연스럽게 정렬됨
+//	            min = i;
+//	            for(int j=i+1; j<size; j++){
+//	                if(table[i][] > data[j]){
+//	                    min = j;
+//	                }
+//	            }
+//	            temp = data[min];
+//	            data[min] = data[i];
+//	            data[i] = temp;
+//	        }
+//	        
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-	
-		String actionCmd = e.getActionCommand();
-		
-		if(actionCmd.equals("Order")) {
-			
-			//
-			
-		}
+		// TODO Auto-generated method stub
 		
 	}
 
