@@ -221,7 +221,6 @@ public class customer_interface extends JFrame implements ActionListener{
 		}
 		
 		JLabel price_panel = new JLabel("Total Price : " + total_price);
-		System.out.println("Total Price : " + total_price);
 		purchase_panel.add(price_panel);
 		JButton purchase_button = new JButton("Purchase");
 		purchase_button.addActionListener(this);
