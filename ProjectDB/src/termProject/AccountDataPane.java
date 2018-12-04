@@ -5,6 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 public class AccountDataPane extends JFrame{
 
@@ -24,6 +29,7 @@ public class AccountDataPane extends JFrame{
 	protected JPanel[] orderDataPanel = new JPanel[2];	// 주문기록창에 사용되는 패널
 	
 	private JLabel[] subTitle = new JLabel[2];		// 각 패널에 달릴 부제 설정
+	
 	private JLabel[] accountTag = new JLabel[9];	// 개인정보 표시부 각 데이터 태그 설정
 	private JLabel[] accountData = new JLabel[9];
 	protected JLabel immutableIDData;					// 수정패널 - 해당 ID 표시 (수정 불가능)
@@ -54,14 +60,25 @@ public class AccountDataPane extends JFrame{
 	
 	private String[] dataArr = new String[9];	// DB로부터 해당 회원정보를 받아와서 저장할 문자열 배열
 	
-	private JButton[] changeBtn = new JButton[3];
+	private JButton[] changeBtn = new JButton[3]; //회원정보 수정 확인 버튼
+	
+	
+	//주문 기록에 대한 테이블 설정
+	private DefaultTableModel model;
+	private JTable orderList;
+	private String header[] = {"Product Name", "Number of Item ordered", "Ordered Date"};	//주문 기록 테이블 헤더
+	private String list[][] = new String[0][7];		//테이블 내부 정보 저장 배열;
+	private JScrollPane scrollPane;
+	private JTextField jtfFilter = new JTextField();
+	private TableRowSorter<TableModel> rowSorter;
+	
 	
 	Statement stmt = null;
 	ResultSet rs = null;
 	
 	public AccountDataPane(Connection conn, String Cus_id) {
 		super("account data Panel");
-		setSize(1000, 800);
+		setSize(800, 800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// 개인정보 화면 구성 패널 생성
@@ -78,6 +95,7 @@ public class AccountDataPane extends JFrame{
 		// 우 - 주문기록 조회 
 		mainAccPanel = new JPanel();
 		mainAccPanel.setLayout(new GridLayout(1,2));
+		mainAccPanel.setPreferredSize(new Dimension(650, 410));
 		
 		/** 개인정보 패널 구현부
 		 * 계정정보 패널위 디자인 설명
@@ -337,14 +355,24 @@ public class AccountDataPane extends JFrame{
 		
 		mainAccPanel.add(dataPanel[0]);
 		
-		//---------------------------------------------------------------------------
-		//--------------------------------------------------------------------------
 		
-		// 주문내역정보 패널 구현부
+		
+		//---------------------------------------------------------------------------
+		//---------------------------------------------------------------------------
+		
+		
+		
+		/**
+		 * 주문내역정보 패널 구현부
+		 * 고객은 자신의 과거 구매 내역을 확인할 수 있다
+		 * ORDERED table 에서 본인의 아이디 정보에 맞는 주문 기록을 받아옴
+		 * ORDERED_PRODUCT 해당 주문 기록 번호에 맞는 구매 기록 품목 정보를 받아옴
+		 */
 		// 주문기록 화면의 전체 패널 
 		orderDataPanel[0] = new JPanel();
 		orderDataPanel[0].setBackground(Color.GRAY);
 		orderDataPanel[0].setLayout(new BorderLayout());
+		orderDataPanel[0].setPreferredSize(new Dimension(400,400));
 		
 		// 개인정보 패널에 달릴 부제목 설정
 		subTitle[1] = new JLabel("   My Order History   ");
@@ -357,7 +385,120 @@ public class AccountDataPane extends JFrame{
 		orderDataPanel[1].setBackground(Color.GRAY);
 		orderDataPanel[0].add(orderDataPanel[1], BorderLayout.CENTER);
 		
+		// ORDERED table로부터 회원의 구매 정보를 받아와 테이블에 저장
+		model = new DefaultTableModel(list, header) {
+
+			/**
+			 * 주문 기록을 DB로 부터 받아 저장, 출력할 테이블 모델 설정
+			 */
+			private static final long serialVersionUID = 1L;
+			public boolean isCellEditable(int rowIndex, int ColIndex) {
+				return false;
+			}
+		};
+		orderList = new JTable(model);
+		rowSorter = new TableRowSorter<>(orderList.getModel());
+		orderList.setRowSorter(rowSorter);
+		orderList.setRowHeight(25);
+		scrollPane = new JScrollPane(orderList);
+		scrollPane.setPreferredSize(new Dimension(400, 300));
+		
+		//orderList.getColumnModel().getColmn(c).setMinWidth(d);
+		
+		jtfFilter.getDocument().addDocumentListener(new DocumentListener(){
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				String text = jtfFilter.getText();
+				
+				if(text.trim().length() == 0) {
+					rowSorter.setRowFilter(null);
+				}else {
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				throw new UnsupportedOperationException("Not supproted yet.");
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				String text = jtfFilter.getText();
+				
+				if(text.trim().length() == 0) {
+					rowSorter.setRowFilter(null);
+				}else {
+					rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+				}
+				
+			}
+		});	
+		
+		try {
+			stmt = conn.createStatement();
+			String sql = "SELECT Order_num, Ordered_date, Product_name, Product_quantity "
+					+ "FROM ORDERED NATURAL JOIN ORDERED_PRODUCT, ITEM "
+					+ "WHERE ORDERED_PRODUCT.Product_number = ITEM.Product_number "
+					+ "AND Cus_id = \'" + Cus_id + "\'";
+			rs = stmt.executeQuery(sql);
+			System.out.println("CUSTOMER ID : " + Cus_id);
+			DefaultTableModel tempModel = (DefaultTableModel) orderList.getModel();
+			while(rs.next()) {
+				//String Order_num = rs.getString(1);
+				String Ordered_date = rs.getString(2);
+				String Product_name = rs.getString(3);
+				String Product_quantity = rs.getString(4);
+				
+				String[] row = {Product_name, Product_quantity, Ordered_date};
+				tempModel.addRow(row);
+				//System.out.println("Order_number : " + Order_num + "\t Order_date : " + Ordered_date);
+			}
+		}catch(SQLException ex) {
+			System.out.println("Error : " + ex);
+		}
+		scrollPane.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		scrollPane.setBackground(Color.GRAY);
+		orderDataPanel[0].add(scrollPane, BorderLayout.CENTER);
+		jtfFilter.setSize(300, 20);
+		orderDataPanel[0].add(jtfFilter, BorderLayout.SOUTH);
+		
+		
 		mainAccPanel.add(orderDataPanel[0]);
+	}
+	public void resetTable() {
+		DefaultTableModel dm = (DefaultTableModel) orderList.getModel();
+		int rowCount = dm.getRowCount();
+		for (int i = rowCount - 1; i >= 0; i--) {
+		    dm.removeRow(i);
+		}
+	}
+	
+	public void refreshAll(Connection conn, String Cus_id) {
+		resetTable();
+		try {
+			stmt = conn.createStatement();
+			String sql = "SELECT Order_num, Ordered_date, Product_name, Product_quantity "
+					+ "FROM ORDERED NATURAL JOIN ORDERED_PRODUCT, ITEM "
+					+ "WHERE ORDERED_PRODUCT.Product_number = ITEM.Product_number "
+					+ "AND Cus_id = \'" + Cus_id + "\'";
+			rs = stmt.executeQuery(sql);
+			System.out.println("CUSTOMER ID : " + Cus_id);
+			DefaultTableModel tempModel = (DefaultTableModel) orderList.getModel();
+			while(rs.next()) {
+				//String Order_num = rs.getString(1);
+				String Ordered_date = rs.getString(2);
+				String Product_name = rs.getString(3);
+				String Product_quantity = rs.getString(4);
+				
+				String[] row = {Product_name, Product_quantity, Ordered_date};
+				tempModel.addRow(row);
+				//System.out.println("Order_number : " + Order_num + "\t Order_date : " + Ordered_date);
+			}
+		}catch(SQLException ex) {
+			System.out.println("Error : " + ex);
+		}
 	}
 	
 	public class subFinalCheckWin extends JFrame{

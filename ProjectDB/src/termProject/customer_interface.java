@@ -107,7 +107,7 @@ public class customer_interface extends JFrame implements ActionListener{
 			 	minor_category[i] = new JTabbedPane();
 				major_category.addTab(major_category_info[i], major_panel[i]);
 				major_panel[i].add(minor_category[i]);
-				major_panel[i].setPreferredSize(new Dimension(1000, 800));
+				major_panel[i].setPreferredSize(new Dimension(950, 430));
 				
 				sql = "SELECT Minor_tag, Minor_number FROM MINOR_CATEGORY WHERE Major_number = " + major_category_number[i];
 				
@@ -130,7 +130,7 @@ public class customer_interface extends JFrame implements ActionListener{
 					minor_panel[j] = new minor_panel(conn, Cus_id, minor_category_number[j]);
 					
 					minor_category[i].addTab(minor_category_info[j], minor_panel[j]);
-					minor_panel[j].setPreferredSize(new Dimension(800, 600));
+					minor_panel[j].setPreferredSize(new Dimension(800, 400));
 					
 				}
 
