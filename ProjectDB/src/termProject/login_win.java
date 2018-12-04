@@ -40,15 +40,13 @@ public class login_win extends JFrame{
 		// ID 입력란 상자 
 		JTextField input_id = new HintTextField("USER ID");
 		input_id.setFont(new Font("San Serif", Font.PLAIN, 15));
-		input_id.setFocusable(false);
-		input_id.setFocusable(true);
 
 		// Password 입력란 상자
 		JTextField input_pass = new HintTextField("PASSWORD");
 		input_pass.setFont(new Font("San Serif", Font.PLAIN, 15));
-		input_pass.setFocusable(false);
-		input_pass.setFocusable(true);
 		
+		input_id.setFocusable(false);
+		input_pass.setFocusable(false);
 		
 		// 로그인 버튼 구현
 		JButton confirmBtn = new JButton("Log In");
@@ -157,7 +155,8 @@ public class login_win extends JFrame{
 		container.add(newAccBtn);
 		newAccBtn.setBounds(30, 270, 200, 40);
 
-
+		input_id.setFocusable(true);
+		input_pass.setFocusable(true);
 	}
 }
 

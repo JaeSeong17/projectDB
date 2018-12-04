@@ -256,7 +256,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		//----------------------------------------------------------------
 		
 		AccountDataPane accDataPane = new AccountDataPane(conn, Cus_id);
-		selectPanel.addTab("USER_INFO", accDataPane.dataPanel[0]);
+		selectPanel.addTab("USER_INFO", accDataPane.mainAccPanel);
 		
 		user_info.setLayout(new GridLayout(4, 0));
 		JLabel Name_Label = new JLabel("Name : "/*쿼리로 불러온 lastname + firstname*/);
