@@ -320,6 +320,22 @@ public class customer_interface extends JFrame implements ActionListener{
 					rs.next();
 					quantity = rs.getInt(1);
 					
+					String office_location;
+					
+					sql = "SELECT Address FROM CUSTOMER WHERE Cus_id = " + ID;
+					rs = stmt.executeQuery(sql);
+					
+					rs.next();
+					office_location = rs.getString(1);
+					
+					int office_num;
+					
+					sql = "SELECT Office_num FROM RETAILER WHERE Address = " + office_location;
+					rs = stmt.executeQuery(sql);
+					
+					rs.next();
+					office_num = rs.getInt(1);
+					
 					if ((quantity-shoppingbag_list[j][1]) < 0) {
 						
 						System.out.println("There is not enough stock");
@@ -334,7 +350,10 @@ public class customer_interface extends JFrame implements ActionListener{
 						
 					}
 					
-					sql = "UPDATE STOCK_DATA SET Stock = " + (quantity-shoppingbag_list[j][1]) + " WHERE Product_number = " + shoppingbag_list[j][0] + " AND Stock = " + shoppingbag_list[j][1];
+					sql = "UPDATE STOCK_DATA SET Stock = " + (quantity-shoppingbag_list[j][1]) + " WHERE Product_number = " + shoppingbag_list[j][0] + " AND Stock = " + shoppingbag_list[j][1] + 
+							" AND Office_num = " + office_num;
+					System.out.println(sql);
+					update = stmt.executeUpdate(sql);
 				
 				}
 				

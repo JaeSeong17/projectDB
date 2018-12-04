@@ -23,12 +23,21 @@ public class admin_interface extends JFrame implements ActionListener{
 	
 	JPanel stock_panel = new JPanel();
 	
-	String[][] stock = new String[100][5];
-	String[] item_column = {"Product number", "Product name", "Importer", "Price", "PL num"};
+	String[][] stock = new String[100][6];
+	String[] item_column = {"Product number", "Product name", "Importer", "Price", "Producer", "Origin"};
 	JTable stock_table = new JTable(stock, item_column);
 	JScrollPane scroll = new JScrollPane(stock_table);
 	JComboBox<String> quantitycombobox = new JComboBox();
 	String[] quantityary = new String[99];
+	
+	JDialog buying_decision = new JDialog();
+	JComboBox<String> locationcombobox = new JComboBox();
+	String[] locationary = {"Seoul", "Busan", "Ulsan", "Daejeon",
+			"Daegu", "Inchen", "Gwangju", "Jeollabuk-do", "Chungcheongbuk-do",
+			"Jeju-do", "Chungcheongnam-do", "Gyeonsangbuk-do", "Gyeonsangnam-do",
+			"Gangwon-do", "Gyeonggi-do", "Jeollabuk-do", "Jeollanam-do"
+	};
+	JButton ok_button = new JButton("OK");
 	
 	JPanel sales_panel = new JPanel();
 	
@@ -55,7 +64,11 @@ public class admin_interface extends JFrame implements ActionListener{
 		stock_table.getColumn("Product name").setPreferredWidth(100);
 		stock_table.getColumn("Importer").setPreferredWidth(150);
 		stock_table.getColumn("Price").setPreferredWidth(100);
-		stock_table.getColumn("PL num").setPreferredWidth(50);
+		stock_table.getColumn("Producer").setPreferredWidth(150);
+		stock_table.getColumn("Origin").setPreferredWidth(200);
+		
+		buying_decision.add(locationcombobox);
+		buying_decision.add(ok_button);
 		
 		int i=0;
 		
@@ -73,6 +86,17 @@ public class admin_interface extends JFrame implements ActionListener{
 				stock[i][4] = Integer.toString(rs.getInt(7));
 				
 				i++;
+				
+			}
+			
+			for(int j=0;j<i;j++) {
+				
+				sql = "SELECT * FROM PRODUCERLOCATION WHERE Pl_num = " + stock[j][4];
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				stock[j][4] = rs.getString(2);
+				stock[j][5] = rs.getString(3);
 				
 			}
 			
@@ -110,7 +134,22 @@ public class admin_interface extends JFrame implements ActionListener{
 		
 		if(actionCmd.equals("Order")) {
 			
-			//
+			int item_number = 0;
+			item_number = Integer.parseInt(stock[stock_table.getSelectedRow()][1]);
+			
+			int quantity = Integer.parseInt((String) quantitycombobox.getSelectedItem());
+					
+			try {
+						
+				sql = "UPDATE STOCK_DATA SET Stock = \" + (quantity+stock_table[j][1])
+				System.out.println(sql);
+				int update = stmt.executeUpdate(sql);
+						
+			} catch (SQLException e1) {
+						
+				e1.printStackTrace();
+					
+			}
 			
 		}
 		
