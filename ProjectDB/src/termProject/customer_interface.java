@@ -199,7 +199,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		//----------------------------------------------------------------
 		
 		AccountDataPane accDataPane = new AccountDataPane(conn, Cus_id);
-		selectPanel.addTab("USER_INFO", accDataPane.dataPanel[0]);
+		selectPanel.addTab("USER_INFO", accDataPane.mainAccPanel);
 	
 	}
 	
