@@ -78,7 +78,7 @@ public class AccountDataPane extends JFrame{
 	
 	public AccountDataPane(Connection conn, String Cus_id) {
 		super("account data Panel");
-		setSize(800, 800);
+		setSize(1000, 800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// 개인정보 화면 구성 패널 생성
@@ -95,7 +95,7 @@ public class AccountDataPane extends JFrame{
 		// 우 - 주문기록 조회 
 		mainAccPanel = new JPanel();
 		mainAccPanel.setLayout(new GridLayout(1,2));
-		mainAccPanel.setPreferredSize(new Dimension(650, 410));
+		mainAccPanel.setPreferredSize(new Dimension(650, 400));
 		
 		/** 개인정보 패널 구현부
 		 * 계정정보 패널위 디자인 설명
