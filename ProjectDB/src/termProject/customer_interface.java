@@ -256,21 +256,7 @@ public class customer_interface extends JFrame implements ActionListener{
 		//----------------------------------------------------------------
 		
 		AccountDataPane accDataPane = new AccountDataPane(conn, Cus_id);
-		selectPanel.addTab("USER_INFO", accDataPane.mainAccPanel);
-		
-		user_info.setLayout(new GridLayout(4, 0));
-		JLabel Name_Label = new JLabel("Name : "/*쿼리로 불러온 lastname + firstname*/);
-		JLabel ID_Label  = new JLabel("ID : " + ""/*쿼리로 불러온 ID 정보*/);	
-		JLabel password_Label = new JLabel("PASSWORD : ");
-		JTextField password_modify = new JTextField(/*쿼리로 불러온 password정보*/); // password_Label 뒤에 붙임
-		JLabel Address_Label = new JLabel("Address : ");
-		JTextField Address_modify = new JTextField(/*쿼리로 불러온 address정보*/); // address_Label 뒤에 붙임
-		//address 나중에 예외처리 해주기
-		JLabel Phonenum_Label = new JLabel("Address : ");
-		JTextField Phonenum_modify = new JTextField(/*쿼리로 불러온 Phone_num정보*/); // Phonenum_Label 뒤에 붙
-		
-
-		
+		selectPanel.addTab("USER_INFO", accDataPane.dataPanel[0]);
 		
 	}
 	
