@@ -67,6 +67,11 @@ public class admin_interface extends JFrame implements ActionListener{
 		stock_table.getColumn("Producer").setPreferredWidth(150);
 		stock_table.getColumn("Origin").setPreferredWidth(200);
 		
+		locationcombobox = new JComboBox<String>(locationary);
+		
+		buying_decision.setSize(300,150);
+		buying_decision.setLayout(new GridLayout(0, 2));
+		
 		buying_decision.add(locationcombobox);
 		buying_decision.add(ok_button);
 		
@@ -134,6 +139,12 @@ public class admin_interface extends JFrame implements ActionListener{
 		
 		if(actionCmd.equals("Order")) {
 			
+			buying_decision.setVisible(true);
+			
+		}
+		
+		else if(actionCmd.equals("OK")) {
+			
 			int item_number = 0;
 			item_number = Integer.parseInt(stock[stock_table.getSelectedRow()][1]);
 			
@@ -141,7 +152,8 @@ public class admin_interface extends JFrame implements ActionListener{
 					
 			try {
 						
-				sql = "UPDATE STOCK_DATA SET Stock = \" + (quantity+stock_table[j][1])
+				sql = "UPDATE STOCK_DATA SET Stock = " + (quantity+stock[stock_table.getSelectedRow()][1]) + " WHERE Office_num = " + locationcombobox.getSelectedItem() +
+						" AND Product_number = " + item_number;
 				System.out.println(sql);
 				int update = stmt.executeUpdate(sql);
 						
@@ -150,6 +162,8 @@ public class admin_interface extends JFrame implements ActionListener{
 				e1.printStackTrace();
 					
 			}
+			
+			buying_decision.setVisible(false);
 			
 		}
 		
