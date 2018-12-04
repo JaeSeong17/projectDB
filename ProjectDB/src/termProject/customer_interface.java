@@ -350,8 +350,9 @@ public class customer_interface extends JFrame implements ActionListener{
 			shoppingbag = new JPanel();
 			shoppingbag_refresh(shoppingbag, ID);
 			
+			selectPanel.add( shoppingbag, "SHOPPINTBAG", 2);
 			selectPanel.removeTabAt(1);
-			selectPanel.add( shoppingbag, "SHOPPINTBAG", 1);
+			//selectPanel.add( shoppingbag, "SHOPPINTBAG", 1);
 			
 			buying_decision.dispose();
 			
@@ -362,8 +363,8 @@ public class customer_interface extends JFrame implements ActionListener{
 			shoppingbag = new JPanel();
 			shoppingbag_refresh(shoppingbag, ID);
 		
+			selectPanel.add( shoppingbag, "SHOPPINTBAG", 2);
 			selectPanel.removeTabAt(1);
-			selectPanel.add( shoppingbag, "SHOPPINTBAG", 1);
 			
 		}
 		
