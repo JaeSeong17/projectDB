@@ -17,12 +17,14 @@ public class customer_interface extends JFrame implements ActionListener{
 	Statement stmt = null;
 	ResultSet rs;
 	String sql = null;
+	String ID = null;
 	
 	JPanel normal_info = new JPanel();
 	JLabel date_info = new JLabel();	//날짜정보
 	JLabel shopname = new JLabel("JS Store");	//가게이름
 	JLabel customer_id = new JLabel();	//현재 접속한 CUSTOMER의 ID표시
 	
+	JPanel select = new JPanel();
 	JTabbedPane selectPanel = new JTabbedPane();
 	JPanel product = new JPanel();
 	JPanel shoppingbag = new JPanel();
@@ -32,19 +34,13 @@ public class customer_interface extends JFrame implements ActionListener{
 	
 	JPanel[] major_panel = new JPanel[10];			//개수를 동적으로 넣을지 정적으로 넣을지 선택
 	JTabbedPane[] minor_category = new JTabbedPane[10];	//major_panel과 같은개수
-	JPanel[] minor_panel = new JPanel[10];			//여기에 제품정보 출력
-	JTable[][] item_table = new JTable[10][10];		//ITEM정보 들어갈 TABLE
-	JButton[][] put_button = new JButton[30][4];
-	String[][][][] item_info = new String[10][10][30][4];
-	String[] item_column = {"Product", "Price", "Producer", "Origin"};
+	minor_panel[] minor_panel = new minor_panel[10];		//여기에 제품정보 출력
 	
-	JDialog num_of_item_box = new JDialog();
-	JTextField num_of_item = new JTextField("Select quantity");
-	JButton num_check_button = new JButton("Decision");
-	
-	String[][] shoppingbag_info = new String[40][5];
+	AccountDataPane accDataPane;
 
 	public customer_interface(Connection conn, String Cus_id) {
+		
+		ID = Cus_id;
 
 		try {
 			stmt = conn.createStatement();
@@ -76,17 +72,14 @@ public class customer_interface extends JFrame implements ActionListener{
 		
 		//기본탭 생성-----------------------------------------------------
 		
-		add(selectPanel);
+		add(select);
+		select.add(selectPanel);
+		
 		
 		selectPanel.addTab("PRODUCT", product);
 		//PRODUCT탭 디자인
 		product.add(major_category);
 		//major_category에 DB에서 카테고리 이름 끌어와서 설정
-		
-		num_of_item_box.setSize(400,200);
-		num_of_item_box.setLayout(new GridLayout(0, 2));
-		num_of_item_box.add(num_of_item);
-		num_of_item_box.add(num_check_button);
 		
 		//동적으로 갯수, 이름 맞춰서 반복문 통해서 정보 집어넣음(3중 반복문)
 		//"중요" 배열건드릴때 nullpointerexception 생각하고 만들것
@@ -134,54 +127,10 @@ public class customer_interface extends JFrame implements ActionListener{
 
 				for(int j=0;j<num_of_minor;j++) {
 				
-					minor_panel[j] = new JPanel();
+					minor_panel[j] = new minor_panel(conn, Cus_id, minor_category_number[j]);
+					
 					minor_category[i].addTab(minor_category_info[j], minor_panel[j]);
 					minor_panel[j].setPreferredSize(new Dimension(800, 600));
-					
-					sql = "SELECT * FROM ITEM, CATEGORY WHERE CATEGORY.Product_number = ITEM.Product_number AND"
-							+ " CATEGORY.Minor_number = " + minor_category_number[j];
-					
-					rs = stmt.executeQuery(sql);
-					
-					int num_of_item = 0;
-					
-					while(rs.next()) {
-						
-						item_info[i][j][num_of_item][0] = rs.getString(2);
-						item_info[i][j][num_of_item][1] = rs.getString(6);
-						item_info[i][j][num_of_item][2] = rs.getString(7);
-
-						num_of_item++;
-						
-					}
-					
-					for(int k=0;k<num_of_item;k++) {
-
-						sql = "SELECT * FROM PRODUCERLOCATION P WHERE P.Pl_num = " + item_info[i][j][k][2];
-					
-						rs = stmt.executeQuery(sql);
-					
-						while(rs.next()) {
-						
-							item_info[i][j][k][2] = rs.getString(2);
-							item_info[i][j][k][3] = rs.getString(3);
-						
-						}
-					
-					}
-					
-					item_table[i][j] = new JTable(item_info[i][j], item_column);
-					//minor_panel[j].setLayout(new BorderLayout());
-					JScrollPane scroll = new JScrollPane(item_table[i][j]);
-					minor_panel[j].add(scroll);
-					//minor_panel[j].add(item_table[i][j]);
-					put_button[i][j] = new JButton("Put in Cart");
-					put_button[i][j].addActionListener(this);
-					minor_panel[j].add(put_button[i][j]);
-					item_table[i][j].getColumn("Product").setPreferredWidth(150);
-					item_table[i][j].getColumn("Price").setPreferredWidth(100);
-					item_table[i][j].getColumn("Producer").setPreferredWidth(150);
-					item_table[i][j].getColumn("Origin").setPreferredWidth(200);
 					
 				}
 
@@ -198,12 +147,16 @@ public class customer_interface extends JFrame implements ActionListener{
 			
 		//----------------------------------------------------------------
 		
-		AccountDataPane accDataPane = new AccountDataPane(conn, Cus_id);
+		accDataPane = new AccountDataPane(conn, Cus_id);
 		selectPanel.addTab("USER_INFO", accDataPane.mainAccPanel);
 	
 	}
 	
 	public void shoppingbag_refresh(JPanel shoppingbag, String Cus_id) {
+		
+		System.out.println("Refresh complete");
+		
+		String[][] shoppingbag_info = new String[40][5];
 		
 		int[] personal_shoppingbag = new int[40];
 		String[] shoppingbag_column = {"Product", "Total Price", "Producer", "Origin", "Quantity"};
@@ -220,7 +173,6 @@ public class customer_interface extends JFrame implements ActionListener{
 		shoppingbag.add(purchase_panel);
 		purchase_panel.setLayout(new GridLayout(2, 0));
 		int total_price = 0;
-		String price = "Total Price : " + total_price;
 		
 		try {
 			
@@ -270,6 +222,9 @@ public class customer_interface extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 		
+		JButton refresh_button = new JButton("Refresh");
+		refresh_button.addActionListener(this);
+		purchase_panel.add(refresh_button);
 		JLabel price_panel  = new JLabel("Total Price : " + total_price);
 		purchase_panel.add(price_panel);
 		JButton purchase_button = new JButton("Purchase");
@@ -280,79 +235,23 @@ public class customer_interface extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		System.out.println("test");
-		
 		String actionCmd = e.getActionCommand();
 		
-		if(actionCmd.equals("Put in Cart")) {
+		if(actionCmd.equals("Purchase")) {
 			
-			System.out.println("Put in Cart");
-				
-			for(int i=0;i<10;i++) {
-				
-				for(int j=0;j<10;j++) {
-					
-					if(item_table[i][j] == null) {
-						
-						continue;
-						
-					}
-			
-					if(item_table[i][j].getSelectedRow() != -1) {
-						
-						if(item_info[i][j][item_table[i][j].getSelectedRow()][0] != null) {
-								//num_of_item_box.setModal(true);
-								num_of_item_box.setVisible(true);
-							
-							}
-						
-						}
-						
-					}
-			
-				}
-			
-			}
-		
-		else if(actionCmd.equals("Decision")) {
-			
-			for(int i=0;i<10;i++) {
-				
-				for(int j=0;j<10;j++) {
-			
-					if(item_table[i][j] == null) {
-						
-						continue;
-						
-					}
-					
-					if(item_table[i][j].getSelectedRow() != -1) {
-						
-						String item_name;
-						item_name = item_info[i][j][item_table[i][j].getSelectedRow()][0];
-						
-						try {
-							
-							sql = "SELECT * FROM PRODUCERLOCATION P WHERE P.Pl_num = ";
-							rs = stmt.executeQuery(sql);
-							
-						} catch (SQLException e1) {
-							
-							e1.printStackTrace();
-							
-						}
-						
-					}
-			
-				}
-			
-			}
+			System.out.println("Purchase");
 			
 		}
 		
-		else if(actionCmd.equals("Purchase")) {
+		if(actionCmd.equals("Refresh")) {
 			
-			System.out.println("Purchase");
+			System.out.println("Refresh");
+			
+			shoppingbag = new JPanel();
+			shoppingbag_refresh(shoppingbag, ID);
+		
+			selectPanel.removeTabAt(1);
+			selectPanel.add( shoppingbag, "SHOPPINTBAG", 1);
 			
 		}
 		
