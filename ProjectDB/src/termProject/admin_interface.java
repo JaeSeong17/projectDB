@@ -65,8 +65,8 @@ public class admin_interface extends JFrame implements ActionListener{
 	//매장별 매출 기록에 대한 테이블 설정
 	private DefaultTableModel retModel;
 	private JTable retTable;
-	private String retHeader[] = {"Office_num", "Address", "Cus_id", "Product_name", "Product_quantity", "Ordered_date"};	//주문 기록 테이블 헤더
-	private String retList[][] = new String[0][6];		//테이블 내부 정보 저장 배열;
+	private String retHeader[] = {"Product_name", "Sales_quantity"};	//주문 기록 테이블 헤더
+	private String retList[][] = new String[0][2];		//테이블 내부 정보 저장 배열;
 	private JScrollPane retScrollPane;
 	private JTextField retJtfFilter = new JTextField();
 	//private TableRowSorter<TableModel> rowSorter;
@@ -180,7 +180,7 @@ public class admin_interface extends JFrame implements ActionListener{
 		
 		//전체 주문 기록 테이블 1.1
 		sales_subTitle[0] = new JLabel("Total Order Data");
-		sales_subTitle[0].setForeground(Color.WHITE);
+		//sales_subTitle[0].setForeground(Color.WHITE);
 		sales_subTitle[0].setFont(new Font("San Serif", Font.PLAIN, 20));
 		sales_subPanel[0].add(sales_subTitle[0], BorderLayout.NORTH);
 		ordModel = new DefaultTableModel(ordList, ordHeader) {
@@ -251,7 +251,7 @@ public class admin_interface extends JFrame implements ActionListener{
 				
 				String[] row = {Order_num, Ordered_date, Cus_id, Product_name, Product_quantity, Address};
 				tempModel.addRow(row);
-				//System.out.println("Order_number : " + Order_num + "\t Order_date : " + Ordered_date);
+				//System.out.println();
 			}
 		}catch(SQLException ex) {
 			System.out.println("Error : " + ex);
@@ -268,11 +268,11 @@ public class admin_interface extends JFrame implements ActionListener{
 		
 		
 		
-		
-		// 매장별 주문기록 테이블 1.2
+		//--------------------------------------------------------------------------------------------
+		//  제품별 판매량 테이블 1.2
 
-		sales_subTitle[1] = new JLabel("Total Order Data");
-		sales_subTitle[1].setForeground(Color.WHITE);
+		sales_subTitle[1] = new JLabel("Sales by Product");
+		//sales_subTitle[1].setForeground(Color.WHITE);
 		sales_subTitle[1].setFont(new Font("San Serif", Font.PLAIN, 20));
 		sales_subPanel[1].add(sales_subTitle[1], BorderLayout.NORTH);
 		retModel = new DefaultTableModel(retList, retHeader) {
@@ -327,23 +327,20 @@ public class admin_interface extends JFrame implements ActionListener{
 		
 		try {
 			stmt = conn.createStatement();
-			String sql = "SELECT RETAILER.Office_num, Address, Cus_id, Product_name, Product_quantity, Ordered_date "
-					+ "FROM ORDERED NATURAL JOIN ORDERED_PRODUCT, ITEM, RETAILER "
+			String sql = "SELECT Product_name, SUM(Product_quantity)"
+					+ "FROM ORDERED NATURAL JOIN ORDERED_PRODUCT, ITEM "
 					+ "WHERE ORDERED_PRODUCT.Product_number = ITEM.Product_number "
-					+ "AND RETAILER.Office_num = ORDERED.Office_num";
+					+ "GROUP BY Product_name";
 			rs = stmt.executeQuery(sql);
 			DefaultTableModel tempModel = (DefaultTableModel) retTable.getModel();
 			while(rs.next()) {
-				String Office_num = rs.getString(1);
-				String Address = rs.getString(2);
-				String Cus_id = rs.getString(3);
-				String Product_name = rs.getString(4);
-				String Product_quantity = rs.getString(5);
-				String Ordered_date = rs.getString(6);
+				String Product_name = rs.getString(1);
+				int Sales_quantity = rs.getInt(2);
+				//int Revenue = Price*Sales_quantity;
 				
-				String[] row = {Office_num, Address, Cus_id, Product_name, Product_quantity, Ordered_date};
+				String[] row = {Product_name, Integer.toString(Sales_quantity)};
 				tempModel.addRow(row);
-				//System.out.println("Order_number : " + Order_num + "\t Order_date : " + Ordered_date);
+				//System.out.println();
 			}
 		}catch(SQLException ex) {
 			System.out.println("Error : " + ex);
