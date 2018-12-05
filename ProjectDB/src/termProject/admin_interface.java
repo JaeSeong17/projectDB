@@ -29,19 +29,26 @@ public class admin_interface extends JFrame implements ActionListener{
 	
 	JPanel stock_panel = new JPanel();
 	
-	String[][] stock = new String[100][6];
-	String[] item_column = {"Product number", "Product name", "Importer", "Price", "Producer", "Origin"};
+	String[][] stock = new String[100][7];
+	String[] item_column = {"Product number", "Product name", "Importer", "Price", "Producer", "Origin", "Stock"};
 	JTable stock_table = new JTable(stock, item_column);
 	JScrollPane scroll = new JScrollPane(stock_table);
 	JComboBox<String> quantitycombobox = new JComboBox();
 	String[] quantityary = new String[99];
 	
+	JComboBox<String> locationselectcombobox = new JComboBox();
+	String[] locationselectary = {"Total", "Seoul", "Daegu", "Incheon", "Busan",
+			"Ulsan", "Gwangju", "Daejeon", "Gyeonggi-do", "Gangwon-do",
+			"Chungcheongbuk-do", "Chungcheongnam-do", "Jeollabuk-do", "Jeollanam-do",
+			"Gyeonsangbuk-do", "Gyeonsangnam-do", "Jeju-do"
+	};
+	
 	JDialog buying_decision = new JDialog();
 	JComboBox<String> locationcombobox = new JComboBox();
-	String[] locationary = {"Seoul", "Busan", "Ulsan", "Daejeon",
-			"Daegu", "Inchen", "Gwangju", "Jeollabuk-do", "Chungcheongbuk-do",
-			"Jeju-do", "Chungcheongnam-do", "Gyeonsangbuk-do", "Gyeonsangnam-do",
-			"Gangwon-do", "Gyeonggi-do", "Jeollabuk-do", "Jeollanam-do"
+	String[] locationary = {"Seoul", "Daegu", "Incheon", "Busan",
+			"Ulsan", "Gwangju", "Daejeon", "Gyeonggi-do", "Gangwon-do",
+			"Chungcheongbuk-do", "Chungcheongnam-do", "Jeollabuk-do", "Jeollanam-do",
+			"Gyeonsangbuk-do", "Gyeonsangnam-do", "Jeju-do"
 	};
 	JButton ok_button = new JButton("OK");
 	
@@ -91,7 +98,7 @@ public class admin_interface extends JFrame implements ActionListener{
 		add(selectPanel);
 		selectPanel.addTab("STOCK", stock_panel);
 		stock_panel.add(scroll);
-		scroll.setPreferredSize(new Dimension(1200, 700));
+		scroll.setPreferredSize(new Dimension(1100, 700));
 		stock_table.getColumn("Product number").setPreferredWidth(100);
 		stock_table.getColumn("Product name").setPreferredWidth(100);
 		stock_table.getColumn("Importer").setPreferredWidth(150);
@@ -99,11 +106,19 @@ public class admin_interface extends JFrame implements ActionListener{
 		stock_table.getColumn("Producer").setPreferredWidth(150);
 		stock_table.getColumn("Origin").setPreferredWidth(200);
 		
+		JLabel select_branch = new JLabel("Select Branch");
+		locationselectcombobox = new JComboBox<String>(locationselectary);
+		locationselectcombobox.addActionListener(this);
+		
+		JLabel empty = new JLabel(" ");
+		
 		locationcombobox = new JComboBox<String>(locationary);
 		
 		buying_decision.setSize(300,150);
 		buying_decision.setLayout(new GridLayout(0, 2));
 		
+		ok_button.addActionListener(this);
+
 		buying_decision.add(locationcombobox);
 		buying_decision.add(ok_button);
 		
@@ -135,7 +150,22 @@ public class admin_interface extends JFrame implements ActionListener{
 				stock[j][4] = rs.getString(2);
 				stock[j][5] = rs.getString(3);
 				
+				sql = "SELECT Stock FROM STOCK_DATA WHERE Product_number = " + stock[j][0];
+				rs = stmt.executeQuery(sql);
+				
+				int total = 0;
+				
+				while(rs.next()) {
+					
+					total += rs.getInt(1);
+					
+				}
+				
+				stock[j][6] = Integer.toString(total);
+						
 			}
+			
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -144,10 +174,14 @@ public class admin_interface extends JFrame implements ActionListener{
 		
 		JPanel extra_panel  = new JPanel();		//매출, 그외 버튼이 들어갈 패널
 		stock_panel.add(extra_panel, BorderLayout.EAST);
-		extra_panel.setLayout(new GridLayout(2, 0));		//매출패널, 주문버튼 분
+		extra_panel.setLayout(new GridLayout(5, 0));		//매출패널, 주문버튼 분
 		
 		for(i=1;i<100;i++)
 			quantityary[i-1] = Integer.toString(i);
+		
+		extra_panel.add(select_branch);
+		extra_panel.add(locationselectcombobox);
+		extra_panel.add(empty);
 		
 		quantitycombobox = new JComboBox<String>(quantityary);	
 		extra_panel.add(quantitycombobox);
@@ -369,20 +403,38 @@ public class admin_interface extends JFrame implements ActionListener{
 		
 		if(actionCmd.equals("Order")) {
 			
+			if (stock_table.getSelectedRow() == -1) {
+				
+				return;
+				
+			}
+			
 			buying_decision.setVisible(true);
 			
 		}
 		
 		else if(actionCmd.equals("OK")) {
-			
-			int item_number = 0;
-			item_number = Integer.parseInt(stock[stock_table.getSelectedRow()][1]);
-			
-			int quantity = Integer.parseInt((String) quantitycombobox.getSelectedItem());
 					
 			try {
-						
-				sql = "UPDATE STOCK_DATA SET Stock = " + (quantity+stock[stock_table.getSelectedRow()][1]) + " WHERE Office_num = " + locationcombobox.getSelectedItem() +
+				
+				int item_number = 0;
+				item_number = Integer.parseInt(stock[stock_table.getSelectedRow()][0]);
+				
+				sql = "SELECT Office_num FROM RETAILER WHERE Address = \'" + locationcombobox.getSelectedItem() + "\'";
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				int location = rs.getInt(1);
+				
+				int quantity = Integer.parseInt((String) quantitycombobox.getSelectedItem());
+				
+				sql = "SELECT Stock FROM STOCK_DATA WHERE Product_number = " + stock[stock_table.getSelectedRow()][0] + " AND Office_num = " + location + "";
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				int current_stock = rs.getInt(1);
+				
+				sql = "UPDATE STOCK_DATA SET Stock = " + (quantity+current_stock) + " WHERE Office_num = " + location +
 						" AND Product_number = " + item_number;
 				System.out.println(sql);
 				int update = stmt.executeUpdate(sql);
@@ -393,8 +445,100 @@ public class admin_interface extends JFrame implements ActionListener{
 					
 			}
 			
+			JPanel modify = new JPanel();
+			selectPanel.add(modify, "modify", 1);
+			selectPanel.add( stock_panel, "STOCK", 2);
+			selectPanel.removeTabAt(0);
+			
 			buying_decision.setVisible(false);
 			
+		}
+		
+		else {
+			
+			JComboBox cb = (JComboBox)e.getSource();
+		
+		int index = cb.getSelectedIndex();
+		
+		int count = 0;
+		
+		if(index == 0) {
+			
+			try {
+				
+				sql = "SELECT count(*) FROM ITEM";
+				rs = stmt.executeQuery(sql);
+				
+				rs.next();
+				count = rs.getInt(1);
+				
+				for(int i=0;i<count;i++) {
+				
+					sql = "SELECT Stock FROM STOCK_DATA WHERE Product_number = " + stock[i][0];
+					rs = stmt.executeQuery(sql);
+				
+					int total = 0;
+				
+					while(rs.next()) {
+						
+						total += rs.getInt(1);
+					
+					}
+				
+						stock[i][6] = Integer.toString(total);
+					
+				}
+				
+				
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();	
+				}
+			
+			JPanel modify = new JPanel();
+			selectPanel.add(modify, "modify", 1);
+			selectPanel.add( stock_panel, "STOCK", 2);
+			selectPanel.removeTabAt(0);
+			
+			return;
+			
+		}
+		
+		for(int i=1;i<=17;i++) {
+			
+			if(index == i) {
+				
+				try {
+					
+					String sql = "SELECT Stock FROM STOCK_DATA WHERE Office_num =  " + i;
+					rs = stmt.executeQuery(sql);
+					
+					int j=0;
+					
+					while(rs.next()) {
+						
+						stock[j][6] = Integer.toString(rs.getInt(1));
+								
+						j++;
+						
+					}
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				JPanel modify = new JPanel();
+				selectPanel.add(modify, "modify", 1);
+				selectPanel.add( stock_panel, "STOCK", 2);
+				selectPanel.removeTabAt(0);
+				
+				return;
+				
+			}
+			
+		}
+		
 		}
 		
 	}
